@@ -14,9 +14,9 @@ namespace SwitchFunc
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="v"></param>
+        /// <param name="cValue"></param>
         /// <returns></returns>
-        ICase<V> CaseOf(V v);
+        ICase<V> CaseOf(V cValue);
 
         /// <summary>
         /// 

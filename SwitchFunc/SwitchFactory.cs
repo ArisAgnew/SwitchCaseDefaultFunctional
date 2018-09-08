@@ -9,18 +9,18 @@ namespace SwitchFunc
         /// <summary>
         /// 
         /// </summary>
-        private protected abstract void Breaker();
+        protected abstract void Breaker();
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="action"></param>
-        private protected abstract void ExecutionBySwitchValue(Action<V> action);
+        /// <param name="actionBySwitchValue"></param>
+        protected abstract void ExecutionBySwitchValue(Action<V> actionBySwitchValue = default);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="action"></param>
-        private protected abstract void ExecutionByCaseValue(Action<V> action);
+        /// <param name="actionByCaseValue"></param>
+        protected abstract void ExecutionByCaseValue(Action<V> actionByCaseValue = default);
     }
 }
