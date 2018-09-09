@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SwitchFunc
 {
-    interface ISwitch<V>
+    public interface ISwitch<V>
     {
         /// <summary>
         /// 

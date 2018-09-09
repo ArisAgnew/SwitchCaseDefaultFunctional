@@ -61,7 +61,7 @@ namespace SwitchFunc
                     ? supplier()
                     : default;
 
-        ICase<V> ICase<V>.CaseOf(V cValue)
+        public ICase<V> CaseOf(V cValue)
         {
             if (!cValue.Equals(default))
             {
