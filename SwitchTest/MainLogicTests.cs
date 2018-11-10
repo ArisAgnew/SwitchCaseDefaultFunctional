@@ -4,39 +4,19 @@ using System;
 using System.Linq;
 
 using SwitchFunc;
+using System.Collections.Immutable;
 
 namespace SwitchTest
 {    
-    public class MainLogicTests
+    public class MainLogicTests : TestData
     {
         private readonly ITestOutputHelper _output;
         public MainLogicTests(ITestOutputHelper output) => _output = output;
 
-        private SwitchCaseDefault<sbyte> _switchValSbyte = default;
-        private SwitchCaseDefault<short> _switchValShort = default;
-        private SwitchCaseDefault<int> _switchValInt = default;
-        private SwitchCaseDefault<long> _switchValLong = default;
-        private SwitchCaseDefault<byte> _switchValByte = default;
-        private SwitchCaseDefault<ushort> _switchValUshort = default;
-        private SwitchCaseDefault<uint> _switchValUint = default;
-        private SwitchCaseDefault<ulong> _switchValUlong = default;
-        private SwitchCaseDefault<char> _switchValChar = default;
-        private SwitchCaseDefault<float> _switchValFloat = default;
-        private SwitchCaseDefault<double> _switchValDouble = default;
-        private SwitchCaseDefault<decimal> _switchValDecimal = default;
-        private SwitchCaseDefault<bool> _switchValBool = default;
-        private SwitchCaseDefault<TypeCode> _switchValEnum = default;
-
-        private SwitchCaseDefault<object> _switchRefObject = default;
-        private SwitchCaseDefault<string> _switchRefString = default;
-        private SwitchCaseDefault<string[]> _switchRefOneDimensionalArray = default;
-        private SwitchCaseDefault<string[][]> _switchRefTwoDimensionalArray = default;
-        private SwitchCaseDefault<string[,]> _switchRefMultiDimensionalArray = default;
-
         [Fact]
-        public void Test1()
+        public void ByteTest()
         {
-            _switchValSbyte = (sbyte)(new Random().Next(-128, 127)); //implicit operator in action
+            _switchValSbyte = 99;//(sbyte)(new Random().Next(sbyte.MinValue, sbyte.MaxValue));
             var type = _switchValSbyte.GetType().GetGenericArguments().SingleOrDefault();
 
             Assert.StrictEqual(typeof(sbyte), _switchValSbyte.SwitchValue.GetType());
@@ -47,20 +27,33 @@ namespace SwitchTest
                 .CaseOf(50).Accomplish(v => _output.WriteLine($"First value: {v}"))
                 .CaseOf(75).Accomplish(v => _output.WriteLine($"Second value: {v}"))
                 .CaseOf(99).Accomplish(v => _output.WriteLine($"Third value: {v}"))
-                .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));                        
+                .CaseOf(123).Accomplish(v => _output.WriteLine($"Fourth value: {v}"))
+                .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
+
+            _switchValSbyte
+                .GetCaseValuesAsImmutableSortedSet()
+                .SelectMany(l => ImmutableList.Create(l))
+                .ToList()
+                .ForEach(s => _output.WriteLine(s.ToString()));
         }
 
-        [Fact(DisplayName = "ิเ๊๒ 2")]
-        public void Test2()
+        [Fact]
+        public void StringTest()
         {
-            _switchRefString = "String"; //implicit operator in action
+            _switchRefString = ImmutableList<string>.Empty
+                .Add(string.Empty)
+                .Add("string")
+                .Add("not string")
+                .Add("String")
+                [new Random().Next(0, 3)];
 
             var type = _switchRefString.GetType().GetGenericArguments().SingleOrDefault();
             
             Assert.StrictEqual(typeof(string), _switchRefString.SwitchValue.GetType());
             Assert.True(type.IsEquivalentTo(typeof(String)));
+            Assert.True(!type.IsValueType);
             Assert.False(type.IsValueType);
-            
+
             _switchRefString
                 .CaseOf("string").Accomplish(v => _output.WriteLine($"First ref: {v}"))
                 .CaseOf("not string").Accomplish(v => _output.WriteLine($"Second ref: {v}"))

@@ -30,7 +30,7 @@ namespace SwitchFunc
 
         private Action ResetArgumentList => () => argsBuilder?.Clear();
 
-        public static SwitchCaseDefault<V> Empty { get; } = new SwitchCaseDefault<V>(default);
+        public static SwitchCaseDefault<V> Empty => new SwitchCaseDefault<V>(default);
 
         public static SwitchCaseDefault<V> Of(V arg) => new SwitchCaseDefault<V>(arg);
         public static SwitchCaseDefault<V> OfNullable(V arg) => arg != null ? Of(arg) : Empty;
@@ -46,7 +46,7 @@ namespace SwitchFunc
 
         protected sealed override void ExecutionByCaseValue(Action<V> actionByCaseValue) => new Action(() => {
             if (!IsSwitchValueNull || !IsSwitchValueDefault)
-                actionByCaseValue?.Invoke(SwitchValue);
+                actionByCaseValue?.Invoke(CaseValue);
         })?.Invoke();
 
         protected sealed override void ExecutionBySwitchValue(Action<V> actionBySwitchValue) => new Action(() => {
@@ -104,12 +104,12 @@ namespace SwitchFunc
             return this;
         }
 
-        ICase<V> ICase<V>.Accomplish(Action action, bool enableBreak) => CaseAccomplish(v => action?.Invoke(), enableBreak);
+        ICase<V> ICase<V>.Accomplish(Action action, bool enableBreak) => CaseAccomplish(v => action(), enableBreak);
         ICase<V> ICase<V>.Accomplish(Action<V> action, bool enableBreak) => CaseAccomplish(action, enableBreak);
 
-        IDefault<V> ICase<V>.ChangeOverToDefault => this ?? default;
+        IDefault<V> ICase<V>.ChangeOverToDefault => this;
 
-        IDefault<V> IDefault<V>.Accomplish(Action action, bool enableBreak) => DefaultAccomplish(v => action?.Invoke(), enableBreak);
+        IDefault<V> IDefault<V>.Accomplish(Action action, bool enableBreak) => DefaultAccomplish(v => action(), enableBreak);
         IDefault<V> IDefault<V>.Accomplish(Action<V> action, bool enableBreak) => DefaultAccomplish(action, enableBreak);
         
         V IDefault<V>.Accomplish(Func<V> supplier, bool enableBreak) =>
