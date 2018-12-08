@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 
 namespace SwitchFunc
 {
@@ -38,5 +39,7 @@ namespace SwitchFunc
         IDefault<V> ChangeOverToDefault { get; }
         
         ICase<V> Peek(Action<V> action);
+
+        ImmutableList<V> GetCaseValuesAsImmutableList();
     }
 }

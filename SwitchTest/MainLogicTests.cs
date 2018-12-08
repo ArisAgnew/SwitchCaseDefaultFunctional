@@ -14,24 +14,26 @@ namespace SwitchTest
 
         [Theory]
         [InlineData(new sbyte[] { 55, 75, 99, 123 })]
-        public void ByteTest(sbyte[] sByteArray)
+        public void ByteTest(in sbyte[] sByteArray)
         {
-            _switchValSbyte = 99;//(sbyte)(new Random().Next(sbyte.MinValue, sbyte.MaxValue));
+            _switchValSbyte = sByteArray
+                .OrderBy(z => Guid.NewGuid())
+                .Cast<sbyte>()
+                .FirstOrDefault();
+
             var type = _switchValSbyte.GetType().GetGenericArguments().SingleOrDefault();
 
             Assert.StrictEqual(typeof(sbyte), _switchValSbyte.SwitchValue.GetType());
             Assert.True(type.IsEquivalentTo(typeof(SByte)));
             Assert.True(type.IsValueType);
 
-            sByteArray.ToList().ForEach(_byte => {
-                _switchValSbyte
-                .CaseOf(_byte).Accomplish(v => _output.WriteLine($"First value: {v}"))
-                .CaseOf(_byte).Accomplish(v => _output.WriteLine($"Second value: {v}"))
-                .CaseOf(_byte).Accomplish(v => _output.WriteLine($"Third value: {v}"))
-                .CaseOf(_byte).Accomplish(v => _output.WriteLine($"Fourth value: {v}"))
+            _switchValSbyte
+                .CaseOf(55).Accomplish(v => _output.WriteLine($"First value: {v}"))
+                .CaseOf(75).Accomplish(v => _output.WriteLine($"Second value: {v}"))
+                .CaseOf(99).Accomplish(v => _output.WriteLine($"Third value: {v}"))
+                .CaseOf(123).Accomplish(v => _output.WriteLine($"Fourth value: {v}"))
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
-            });
-            
+
             /*_switchValSbyte
                 .GetCaseValuesAsImmutableSortedSet()
                 .SelectMany(l => ImmutableList.Create(l))
@@ -49,12 +51,12 @@ namespace SwitchTest
                 .Add("AUSTRALIA")
                 [new Random().Next(0, 3)];
 
-            var type = _switchRefString.GetType().GetGenericArguments().SingleOrDefault();
-            
+            var type = _switchRefString.GetType().GetGenericArguments().SingleOrDefault();            
+
             Assert.StrictEqual(typeof(string), _switchRefString.SwitchValue.GetType());
             Assert.True(type.IsEquivalentTo(typeof(String)));
             Assert.True(!type.IsValueType);
-            Assert.False(type.IsValueType);
+            Assert.False(type.IsValueType);                   
 
             _switchRefString
 
@@ -63,7 +65,7 @@ namespace SwitchTest
                 .CaseOf("CANADA").Accomplish(v => _output.WriteLine($"Second ref: {v}"))
 
                 .CaseOf("AUSTRALIA").Accomplish(v => _output.WriteLine($"Third ref: {v}"))
-
+                
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"));
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 
 namespace SwitchFunc
@@ -93,14 +93,18 @@ namespace SwitchFunc
 
         private IDefault<V> DefaultAccomplish(Action<V> action, bool enableBreak)
         {
-            if (!CaseValue.Equals(SwitchValue))
+            var filtered = GetCaseValuesAsImmutableList()
+                .Where(v => v.Equals(SwitchValue))
+                .FirstOrDefault();
+
+            if (filtered == default)
             {
                 if (enableBreak)
                 {
                     ExecutionBySwitchValue(action ?? default);
                 }
             }
-
+            
             return this;
         }
 
@@ -108,9 +112,6 @@ namespace SwitchFunc
         ICase<V> ICase<V>.Accomplish(Action<V> action, bool enableBreak) => CaseAccomplish(action, enableBreak);
 
         IDefault<V> ICase<V>.ChangeOverToDefault => this;
-
-        V ICase<V>.CaseValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        V ISwitch<V>.SwitchValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         IDefault<V> IDefault<V>.Accomplish(Action action, bool enableBreak) => DefaultAccomplish(v => action(), enableBreak);
         IDefault<V> IDefault<V>.Accomplish(Action<V> action, bool enableBreak) => DefaultAccomplish(action, enableBreak);
@@ -155,8 +156,8 @@ namespace SwitchFunc
         public U GetCustomized<U>(Func<V, U> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(SwitchValue) : default;
 
         public ImmutableHashSet<V> GetCaseValuesAsImmutableSet() => argsBuilder.ToImmutableHashSet() ?? default;
-        public ImmutableList<V> GetCaseValuesAsImmutableList() => argsBuilder.ToImmutable() ?? default;
         public ImmutableSortedSet<V> GetCaseValuesAsImmutableSortedSet() => argsBuilder.ToImmutableSortedSet() ?? default;
+        public ImmutableList<V> GetCaseValuesAsImmutableList() => argsBuilder.ToImmutable() ?? default;
 
         public static implicit operator SwitchCaseDefault<V>(V value) => OfNullable(value);
     }
