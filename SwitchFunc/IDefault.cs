@@ -28,6 +28,11 @@ namespace SwitchFunc
         /// <returns></returns>
         V Accomplish(Func<V> supplier = default, bool enableBreak = !default(bool));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
         IDefault<V> Peek(Action<V> action);
     }
 }

@@ -13,6 +13,11 @@ namespace SwitchFunc
         /// <summary>
         /// 
         /// </summary>
+        IDefault<V> ChangeOverToDefault { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="cValue"></param>
         /// <returns></returns>
         ICase<V> CaseOf(V cValue);
@@ -32,14 +37,12 @@ namespace SwitchFunc
         /// <param name="enableBreak"></param>
         /// <returns></returns>
         ICase<V> Accomplish(Action<V> action = default, bool enableBreak = !default(bool));
-
+        
         /// <summary>
         /// 
         /// </summary>
-        IDefault<V> ChangeOverToDefault { get; }
-        
+        /// <param name="action"></param>
+        /// <returns></returns>
         ICase<V> Peek(Action<V> action);
-
-        ImmutableList<V> GetCaseValuesAsImmutableList();
     }
 }
