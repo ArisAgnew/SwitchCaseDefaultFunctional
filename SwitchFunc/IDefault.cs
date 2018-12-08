@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SwitchFunc
 {
@@ -29,5 +27,12 @@ namespace SwitchFunc
         /// <param name="enableBreak"></param>
         /// <returns></returns>
         V Accomplish(Func<V> supplier = default, bool enableBreak = !default(bool));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        IDefault<V> Peek(Action<V> action);
     }
 }

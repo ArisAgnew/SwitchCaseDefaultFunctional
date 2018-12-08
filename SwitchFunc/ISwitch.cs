@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SwitchFunc
 {
@@ -16,6 +14,6 @@ namespace SwitchFunc
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        ISwitch<V> Peek(Action<V> action);
+        ICase<V> Peek(Action<V> action);
     }
 }

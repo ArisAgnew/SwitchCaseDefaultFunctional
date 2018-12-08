@@ -109,6 +109,9 @@ namespace SwitchFunc
 
         IDefault<V> ICase<V>.ChangeOverToDefault => this;
 
+        V ICase<V>.CaseValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        V ISwitch<V>.SwitchValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         IDefault<V> IDefault<V>.Accomplish(Action action, bool enableBreak) => DefaultAccomplish(v => action(), enableBreak);
         IDefault<V> IDefault<V>.Accomplish(Action<V> action, bool enableBreak) => DefaultAccomplish(action, enableBreak);
         
@@ -134,7 +137,7 @@ namespace SwitchFunc
             return this;
         }
 
-        ISwitch<V> ISwitch<V>.Peek(Action<V> action)
+        private dynamic Overwatch(in Action<V> action)
         {
             if (!IsSwitchValueNull || !IsSwitchValueDefault)
             {
@@ -143,6 +146,10 @@ namespace SwitchFunc
 
             return this;
         }
+
+        public ICase<V> Peek(Action<V> action) => Overwatch(action);
+        ICase<V> ICase<V>.Peek(Action<V> action) => Overwatch(action); //todo implement logic for the case values
+        IDefault<V> IDefault<V>.Peek(Action<V> action) => Overwatch(action); //todo implement logic for the default value only
 
         public V GetCustomized(Func<V, V> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(SwitchValue) : default;
         public U GetCustomized<U>(Func<V, U> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(SwitchValue) : default;

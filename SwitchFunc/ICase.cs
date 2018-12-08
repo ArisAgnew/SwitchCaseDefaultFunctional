@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SwitchFunc
 {
@@ -38,5 +36,7 @@ namespace SwitchFunc
         /// 
         /// </summary>
         IDefault<V> ChangeOverToDefault { get; }
+        
+        ICase<V> Peek(Action<V> action);
     }
 }
