@@ -11,7 +11,7 @@ namespace SwitchTest
     {
         private readonly ITestOutputHelper _output;
         public TypeMainTest(ITestOutputHelper output) => _output = output;
-                
+
         #region Value Types Unit Tests
         [Theory]
         [InlineData(new sbyte[] { (sbyte)SbyteConst.SBYTE1, (sbyte)SbyteConst.SBYTE2, (sbyte)SbyteConst.SBYTE3 })]
@@ -71,12 +71,47 @@ namespace SwitchTest
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
         }
 
-        public void IntTest() { }
-        public void LongTest() { }
-        public void ByteTest() { }
-        public void UshortTest() { }
-        public void UintTest() { }
-        public void UlongTest() { }
+        [Theory]
+        [InlineData(new int[] { (int)IntConst.INT1, (int)IntConst.INT2, (int)IntConst.INT3 })]
+        public void IntTest(in int[] intArray)
+        {
+
+        }
+
+        [Theory]
+        [InlineData(new long[] { (long)LongConst.LONG1, (long)LongConst.LONG2, (long)LongConst.LONG3 })]
+        public void LongTest(in long[] longArray)
+        {
+
+        }
+
+        [Theory]
+        [InlineData(new byte[] { (byte)ByteConst.BYTE1, (byte)ByteConst.BYTE2, (byte)ByteConst.BYTE3 })]
+        public void ByteTest(in byte[] byteArray)
+        {
+
+        }
+
+        [Theory]
+        [InlineData(new ushort[] { (ushort)UshortConst.USHORT1, (ushort)UshortConst.USHORT2, (ushort)UshortConst.USHORT3 })]
+        public void UshortTest(in ushort[] ushortArray)
+        {
+
+        }
+
+        [Theory]
+        [InlineData(new uint[] { (uint)UintConst.UINT1, (uint)UintConst.UINT2, (uint)UintConst.UINT3 })]
+        public void UintTest(in uint[] uintArray)
+        {
+
+        }
+
+        [Theory]
+        [InlineData(new ulong[] { (ulong)UlongConst.ULONG1, (ulong)UlongConst.ULONG2, (ulong)UlongConst.ULONG3 })]
+        public void UlongTest(in ulong[] ulongArray)
+        {
+
+        }
 
         [Theory]
         [InlineData(new char[] { CharConst.CHAR1, CharConst.CHAR2, CharConst.CHAR3 })]
@@ -107,11 +142,74 @@ namespace SwitchTest
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
         }
 
-        public void FloatTest() { }
-        public void DoubleTest() { }
-        public void DecimalTest() { }
-        public void BoolTest() { }
-        public void EnumTest() { }
+        [Theory]
+        [InlineData(new float[] {
+            FloatConst.FLOAT1,
+            FloatConst.FLOAT2,
+            FloatConst.FLOAT3,
+            FloatConst.FLOAT4,
+            FloatConst.FLOAT5,
+            FloatConst.FLOAT6,
+            FloatConst.FLOAT7
+        })]
+        public void FloatTest(in float[] floatArray)
+        {
+
+        }
+
+        [Theory]
+        [InlineData(new double[] {
+            DoubleConst.DOUBLE1,
+            DoubleConst.DOUBLE2,
+            DoubleConst.DOUBLE3,
+            DoubleConst.DOUBLE4,
+            DoubleConst.DOUBLE5,
+            DoubleConst.DOUBLE6,
+            DoubleConst.DOUBLE7
+        })]
+        public void DoubleTest(in double[] doubleArray)
+        {
+
+        }
+
+        [Theory]
+        [InlineData(default)]
+        public void DecimalTest(in decimal[] decimalArray)
+        {
+            //todo
+        }
+
+        [Theory]
+        [InlineData(new bool[] { BooleanConst.BOOL1, BooleanConst.BOOL2 })]
+        public void BoolTest(in bool[] boolArray)
+        {
+
+        }
+
+        [Theory]
+        [InlineData(new TypeCode[] {
+            TypeCode.Empty,
+            TypeCode.Object,
+            TypeCode.DBNull,
+            TypeCode.Boolean,
+            TypeCode.Char,
+            TypeCode.SByte,
+            TypeCode.Byte,
+            TypeCode.Int16,
+            TypeCode.UInt16,
+            TypeCode.Int32,
+            TypeCode.Int64,
+            TypeCode.UInt64,
+            TypeCode.Single,
+            TypeCode.Double,
+            TypeCode.Decimal,
+            TypeCode.DateTime,
+            TypeCode.String
+        })]
+        public void EnumTest(in TypeCode[] enumArray)
+        {
+
+        }
 
         #endregion
 

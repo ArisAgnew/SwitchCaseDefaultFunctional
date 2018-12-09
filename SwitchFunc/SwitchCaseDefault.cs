@@ -92,7 +92,7 @@ namespace SwitchFunc
 
         private IDefault<V> DefaultAccomplish(Action<V> action, bool enableBreak)
         {
-            var refFiltered = GetCaseValuesAsImmutableList()
+            var refFiltered = argsBuilder.ToImmutable()
                 .Where(v => v.Equals(SwitchValue))
                 .Where(v => !v.GetType().IsValueType)
                 .FirstOrDefault();

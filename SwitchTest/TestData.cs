@@ -57,8 +57,7 @@ namespace SwitchTest
     internal struct BooleanConst
     {
         internal const bool BOOL1 = default;
-        internal static readonly bool BOOL2 = bool.Parse(bool.FalseString.AsSpan());
-        internal static readonly bool BOOL3 = bool.Parse(bool.TrueString.AsSpan());
+        internal const bool BOOL2 = !default(bool);
     }
     #endregion
 
