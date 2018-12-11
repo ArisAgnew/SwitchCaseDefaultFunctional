@@ -16,6 +16,8 @@ namespace SwitchFunc
     {        
         private readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
 
+        private bool whenTrigger = default;
+
         private SwitchCaseDefault() { }
         private SwitchCaseDefault(in V inputValue) => SwitchValue = inputValue;
 
@@ -71,9 +73,25 @@ namespace SwitchFunc
             return this;
         }
 
+        public ICase<V> CaseOf(V cValue, Predicate<V> when)
+        {            
+            if (!cValue.Equals(default))
+            {
+                CaseValue = cValue;
+                argsBuilder?.Add(cValue);
+
+                if (when.Invoke(CaseValue))
+                {
+                    whenTrigger = true;
+                }
+            }
+
+            return this;
+        }       
+
         private ICase<V> CaseAccomplish(Action<V> action, bool enableBreak)
         {
-            if (CaseValue.Equals(SwitchValue))
+            if (CaseValue.Equals(SwitchValue)) //todo: to come up with what to do by using "whenTrigger"
             {
                 if (enableBreak)
                 {
@@ -166,7 +184,7 @@ namespace SwitchFunc
         public ImmutableHashSet<V> GetCaseValuesAsImmutableSet() => argsBuilder.ToImmutableHashSet() ?? default;
         public ImmutableSortedSet<V> GetCaseValuesAsImmutableSortedSet() => argsBuilder.ToImmutableSortedSet() ?? default;
         public ImmutableList<V> GetCaseValuesAsImmutableList() => argsBuilder.ToImmutable() ?? default;
-
+                
         public static implicit operator SwitchCaseDefault<V>(V value) => OfNullable(value);
     }
 }

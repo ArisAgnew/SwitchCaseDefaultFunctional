@@ -7,21 +7,21 @@ using System.Collections.Immutable;
 
 namespace SwitchTest
 {
-    public class TypeMainTest : TestData
+    #region Value Types Unit Tests
+    public partial class TypeMainTest : TestData
     {
         private readonly ITestOutputHelper _output;
         public TypeMainTest(ITestOutputHelper output) => _output = output;
-
-        #region Value Types Unit Tests
+                
         [Theory]
         [InlineData(new sbyte[] { (sbyte)SbyteConst.SBYTE1, (sbyte)SbyteConst.SBYTE2, (sbyte)SbyteConst.SBYTE3 })]
         public void SbyteTest(in sbyte[] sbyteArray)
         {
-            _switchValSbyte = sbyteArray
+            _switchValSbyte = (sbyte)SbyteConst.SBYTE1/*sbyteArray
                 .Concat(new sbyte[] { -23, 23 })
                 .OrderBy(z => Guid.NewGuid())
                 .Cast<sbyte>()
-                .FirstOrDefault();
+                .FirstOrDefault()*/;
 
             var type = _switchValSbyte
                 .GetType()
@@ -33,9 +33,15 @@ namespace SwitchTest
             Assert.True(type.IsValueType);
 
             _switchValSbyte
-                .CaseOf((sbyte)SbyteConst.SBYTE1).Accomplish(v => _output.WriteLine($"First value: {v}"))
-                .CaseOf((sbyte)SbyteConst.SBYTE2).Accomplish(v => _output.WriteLine($"Second value: {v}"))
-                .CaseOf((sbyte)SbyteConst.SBYTE3).Accomplish(v => _output.WriteLine($"Third value: {v}"))
+                .CaseOf((sbyte)SbyteConst.SBYTE1, c => c > 1)
+                .Accomplish(v => _output.WriteLine($"First value: {v}"))
+
+                .CaseOf((sbyte)SbyteConst.SBYTE2)
+                .Accomplish(v => _output.WriteLine($"Second value: {v}"))
+
+                .CaseOf((sbyte)SbyteConst.SBYTE3)
+                .Accomplish(v => _output.WriteLine($"Third value: {v}"))
+
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
 
             /*_switchValSbyte
@@ -403,11 +409,13 @@ namespace SwitchTest
                 .CaseOf(TypeCode.Double).Accomplish(v => _output.WriteLine($"Eleventh value: {v}"))
                 .CaseOf(TypeCode.Decimal).Accomplish(v => _output.WriteLine($"Twelfth value: {v}"))
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
-        }
+        }        
+    }
+    #endregion
 
-        #endregion
-
-        #region Reference Types Unit Tests
+    #region Reference Types Unit Tests
+    public partial class TypeMainTest
+    {
         [Fact]
         public void StringTest()
         {
@@ -421,12 +429,12 @@ namespace SwitchTest
             var type = _switchRefString
                 .GetType()
                 .GetGenericArguments()
-                .SingleOrDefault();            
+                .SingleOrDefault();
 
             Assert.StrictEqual(typeof(string), _switchRefString.SwitchValue.GetType());
             Assert.True(type.IsEquivalentTo(typeof(String)));
             Assert.True(!type.IsValueType);
-            Assert.False(type.IsValueType);                   
+            Assert.False(type.IsValueType);
 
             _switchRefString
 
@@ -435,9 +443,9 @@ namespace SwitchTest
                 .CaseOf("CANADA").Accomplish(v => _output.WriteLine($"Second ref: {v}"))
 
                 .CaseOf("AUSTRALIA").Accomplish(v => _output.WriteLine($"Third ref: {v}"))
-                
+
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"));
         }
-        #endregion
     }
+    #endregion
 }
