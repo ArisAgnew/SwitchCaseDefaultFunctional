@@ -123,20 +123,23 @@ namespace SwitchFunc
                 .Where(v => !v.GetType().IsValueType)
                 .FirstOrDefault();
 
-            if (IsValueType && !SwitchValue.Equals(default(V)))
+            Action fulfillMain = () =>
             {
                 if (enableBreak)
                 {
                     ExecutionBySwitchValue(action ?? default);
                 }
-            }
+            };
+
+            if (IsValueType /*&& !SwitchValue.Equals(default(V))*/) 
+                //perhaps we should create trigger (bool) when breaker comes to pass and with no it
+            {
+                fulfillMain();
+            }                       
 
             if (refFiltered == default)
             {
-                if (enableBreak)
-                {
-                    ExecutionBySwitchValue(action ?? default);
-                }
+                fulfillMain();
             }
 
             return this;

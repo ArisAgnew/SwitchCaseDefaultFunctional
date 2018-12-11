@@ -55,7 +55,7 @@ namespace SwitchTest
         [InlineData(new short[] { (short)ShortConst.SHORT1, (short)ShortConst.SHORT2, (short)ShortConst.SHORT3 })]
         public void ShortTest(in short[] shortArray)
         {
-            _switchValShort = 0/*shortArray
+            _switchValShort = (short)ShortConst.SHORT1/*shortArray
                 .Concat(new short[] { -23000, 23000 })
                 .OrderBy(z => Guid.NewGuid())
                 .Cast<short>()
@@ -352,7 +352,7 @@ namespace SwitchTest
             Assert.True(type.IsValueType);
 
             _switchValBool
-                .CaseOf(BooleanConst.BOOL2).Accomplish(v => _output.WriteLine($"First value: {v}"))
+                .CaseOf(BooleanConst.BOOL1).Accomplish(v => _output.WriteLine($"First value: {v}"))
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
         }
 
