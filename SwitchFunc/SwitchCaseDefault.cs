@@ -16,7 +16,7 @@ namespace SwitchFunc
     {        
         private readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
 
-        private bool whenTrigger = default;
+        private Predicate<V> whenInternal = default;
 
         private SwitchCaseDefault() { }
         private SwitchCaseDefault(in V inputValue) => SwitchValue = inputValue;
@@ -62,36 +62,27 @@ namespace SwitchFunc
                     ? supplier()
                     : default;
 
-        public ICase<V> CaseOf(V cValue)
-        {
-            if (!cValue.Equals(default))
-            {
-                CaseValue = cValue;
-                argsBuilder?.Add(cValue);
-            }
-
-            return this;
-        }
-
-        public ICase<V> CaseOf(V cValue, Predicate<V> when)
+        public ICase<V> CaseOf(V cValue, Predicate<V> when = default)
         {            
             if (!cValue.Equals(default))
             {
                 CaseValue = cValue;
                 argsBuilder?.Add(cValue);
 
-                if (when.Invoke(CaseValue))
+                if (when != default)
                 {
-                    whenTrigger = true;
+                    whenInternal = when;
                 }
             }
 
             return this;
-        }       
+        }
 
-        private ICase<V> CaseAccomplish(Action<V> action, bool enableBreak)
+        //public ICase<V> CaseOf(V cValue, Predicate<dynamic> when = default) => default;
+
+        private ICase<V> CaseAccomplish(Action<V> action, bool enableBreak) // some bug with 0 value have found. sort it out!
         {
-            if (CaseValue.Equals(SwitchValue)) //todo: to come up with what to do by using "whenTrigger"
+            Func<SwitchCaseDefault<V>> fulfillMain = () =>
             {
                 if (enableBreak)
                 {
@@ -104,8 +95,25 @@ namespace SwitchFunc
                     ExecutionByCaseValue(action ?? default);
                     return this;
                 }
+            };
+
+            if (whenInternal ==  default)
+            {
+                if (CaseValue.Equals(SwitchValue))
+                {
+                    return fulfillMain();
+                }
+                else return this;
             }
-            else return this;
+            else if (CaseValue.Equals(SwitchValue) && whenInternal.Invoke(CaseValue))
+            {
+                return fulfillMain();
+            }
+            else
+            {
+                whenInternal = default;
+                return this;
+            }
         }
 
         private IDefault<V> DefaultAccomplish(Action<V> action, bool enableBreak)

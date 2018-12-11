@@ -17,7 +17,7 @@ namespace SwitchTest
         [InlineData(new sbyte[] { (sbyte)SbyteConst.SBYTE1, (sbyte)SbyteConst.SBYTE2, (sbyte)SbyteConst.SBYTE3 })]
         public void SbyteTest(in sbyte[] sbyteArray)
         {
-            _switchValSbyte = (sbyte)SbyteConst.SBYTE1/*sbyteArray
+            _switchValSbyte = 0/*sbyteArray
                 .Concat(new sbyte[] { -23, 23 })
                 .OrderBy(z => Guid.NewGuid())
                 .Cast<sbyte>()
@@ -33,7 +33,7 @@ namespace SwitchTest
             Assert.True(type.IsValueType);
 
             _switchValSbyte
-                .CaseOf((sbyte)SbyteConst.SBYTE1, c => c > 1)
+                .CaseOf((sbyte)SbyteConst.SBYTE1 + (-23), c => c == -23)
                 .Accomplish(v => _output.WriteLine($"First value: {v}"))
 
                 .CaseOf((sbyte)SbyteConst.SBYTE2)
@@ -55,11 +55,11 @@ namespace SwitchTest
         [InlineData(new short[] { (short)ShortConst.SHORT1, (short)ShortConst.SHORT2, (short)ShortConst.SHORT3 })]
         public void ShortTest(in short[] shortArray)
         {
-            _switchValShort = shortArray
+            _switchValShort = 0/*shortArray
                 .Concat(new short[] { -23000, 23000 })
                 .OrderBy(z => Guid.NewGuid())
                 .Cast<short>()
-                .FirstOrDefault();
+                .FirstOrDefault()*/;
 
             var type = _switchValShort
                 .GetType()
