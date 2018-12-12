@@ -55,7 +55,7 @@ namespace SwitchTest
         [InlineData(new short[] { (short)ShortConst.SHORT1, (short)ShortConst.SHORT2, (short)ShortConst.SHORT3 })]
         public void ShortTest(in short[] shortArray)
         {
-            _switchValShort = (short)ShortConst.SHORT1/*shortArray
+            _switchValShort = 0/*shortArray
                 .Concat(new short[] { -23000, 23000 })
                 .OrderBy(z => Guid.NewGuid())
                 .Cast<short>()

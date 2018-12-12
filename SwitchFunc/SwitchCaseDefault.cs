@@ -17,6 +17,7 @@ namespace SwitchFunc
         private readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
 
         private Predicate<V> whenInternal = default;
+        private bool breakerTrigger = default;
 
         private SwitchCaseDefault() { }
         private SwitchCaseDefault(in V inputValue) => SwitchValue = inputValue;
@@ -41,6 +42,7 @@ namespace SwitchFunc
             if (IsValueType)
             {
                 (SwitchValue, CaseValue) = (default, default);
+                breakerTrigger = true;
             }
             else return;
         })?.Invoke();
@@ -80,7 +82,7 @@ namespace SwitchFunc
 
         //public ICase<V> CaseOf(V cValue, Predicate<dynamic> when = default) => default;
 
-        private ICase<V> CaseAccomplish(Action<V> action, bool enableBreak) // some bug with 0 value have found. sort it out!
+        private ICase<V> CaseAccomplish(Action<V> action, bool enableBreak)
         {
             Func<SwitchCaseDefault<V>> fulfillMain = () =>
             {
@@ -131,10 +133,19 @@ namespace SwitchFunc
                 }
             };
 
-            if (IsValueType /*&& !SwitchValue.Equals(default(V))*/) 
-                //perhaps we should create trigger (bool) when breaker comes to pass and with no it
+            if (IsValueType)
             {
-                fulfillMain();
+                if (!SwitchValue.Equals(default(V)))
+                {
+                    fulfillMain();
+                }
+                else
+                {
+                    if (!breakerTrigger)
+                    {
+                        fulfillMain();
+                    }
+                }
             }                       
 
             if (refFiltered == default)
