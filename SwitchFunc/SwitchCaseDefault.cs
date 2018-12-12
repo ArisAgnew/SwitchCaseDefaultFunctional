@@ -5,14 +5,14 @@ using System.Linq;
 namespace SwitchFunc
 {
     /// <summary>
-    /// Switch class is a functional wrapper of regular switch operator
+    /// Switch class is a functional wrapper of the regular switch operator
     /// with other-following operators such as 'case', 'when', 'default';
     /// </summary>
     /// <typeparam name="V"></typeparam> 
     /// <remarks>
     /// Starting with C# 7.0, the match expression can be any non-null expression.
     /// </remarks>
-    public sealed class SwitchCaseDefault<V> : SwitchFactory<V>, ISwitch<V>, ICase<V>, IDefault<V>
+    public sealed partial class SwitchCaseDefault<V> : SwitchFactory<V>, ISwitch<V>, ICase<V>, IDefault<V>
     {        
         private readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
 
@@ -37,7 +37,75 @@ namespace SwitchFunc
         public static SwitchCaseDefault<V> Of(V arg) => new SwitchCaseDefault<V>(arg);
         public static SwitchCaseDefault<V> OfNullable(V arg) => arg != null ? Of(arg) : Empty;
         public static SwitchCaseDefault<V> OfNullable(Func<V> outputValue) => outputValue != null ? Of(outputValue()) : Empty;
+        
+        public ICase<V> CaseOf(V cValue, Predicate<V> when = default)
+        {            
+            if (!cValue.Equals(default))
+            {
+                CaseValue = cValue;
+                argsBuilder?.Add(cValue);
 
+                if (when != default)
+                {
+                    whenInternal = when;
+                }
+            }
+
+            return this;
+        }
+
+        public ICase<V> CaseDynamicOf(V cValue, Predicate<dynamic> when = default) => default;
+
+        ICase<V> ICase<V>.Accomplish(Action action, bool enableBreak) => CaseAccomplish(v => action(), enableBreak);
+        ICase<V> ICase<V>.Accomplish(Action<V> action, bool enableBreak) => CaseAccomplish(action, enableBreak);
+
+        IDefault<V> ICase<V>.ChangeOverToDefault => this;
+
+        IDefault<V> IDefault<V>.Accomplish(Action action, bool enableBreak) => DefaultAccomplish(v => action(), enableBreak);
+        IDefault<V> IDefault<V>.Accomplish(Action<V> action, bool enableBreak) => DefaultAccomplish(action, enableBreak);
+        
+        V IDefault<V>.AccomplishToGet(Func<V> supplier, bool enableBreak) =>
+            CaseValue.Equals(SwitchValue)
+                ? default
+                : enableBreak
+                    ? supplier.Equals(default)
+                        ? default
+                        : (!IsSwitchValueNull || !IsSwitchValueDefault)
+                            ? supplier()
+                            : default
+                    : default;
+
+        public SwitchCaseDefault<V> ResetFullEntities()
+        {
+            if (!IsSwitchValueNull && !IsSwitchValueDefault)
+            {
+                Breaker();
+            }
+
+            if (argsBuilder?.Count > 0)
+            {
+                ResetArgumentList();
+            }
+
+            return this;
+        }        
+
+        public ICase<V> Peek(Action<V> action) => Overwatch(action);
+        ICase<V> ICase<V>.Peek(Action<V> action) => Overwatch(action); //todo implement logic for the case values
+        IDefault<V> IDefault<V>.Peek(Action<V> action) => Overwatch(action); //todo implement logic for the default value only
+
+        public V GetCustomized(Func<V, V> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(SwitchValue) : default;
+        public U GetCustomized<U>(Func<V, U> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(SwitchValue) : default;
+
+        public ImmutableHashSet<V> GetCaseValuesAsImmutableSet() => argsBuilder.ToImmutableHashSet() ?? default;
+        public ImmutableSortedSet<V> GetCaseValuesAsImmutableSortedSet() => argsBuilder.ToImmutableSortedSet() ?? default;
+        public ImmutableList<V> GetCaseValuesAsImmutableList() => argsBuilder.ToImmutable() ?? default;
+                
+        public static implicit operator SwitchCaseDefault<V>(V value) => OfNullable(value);        
+    }
+
+    public sealed partial class SwitchCaseDefault<V>
+    {
         protected sealed override void Breaker() => new Action(() => {
             if (IsValueType)
             {
@@ -57,34 +125,9 @@ namespace SwitchFunc
                 actionBySwitchValue?.Invoke(SwitchValue);
         })?.Invoke();
 
-        private V Execution(Func<V> supplier) =>
-            supplier.Equals(default)
-                ? default
-                : (!IsSwitchValueNull || !IsSwitchValueDefault)
-                    ? supplier()
-                    : default;
-
-        public ICase<V> CaseOf(V cValue, Predicate<V> when = default)
-        {            
-            if (!cValue.Equals(default))
-            {
-                CaseValue = cValue;
-                argsBuilder?.Add(cValue);
-
-                if (when != default)
-                {
-                    whenInternal = when;
-                }
-            }
-
-            return this;
-        }
-
-        //public ICase<V> CaseOf(V cValue, Predicate<dynamic> when = default) => default;
-
         private ICase<V> CaseAccomplish(Action<V> action, bool enableBreak)
         {
-            Func<SwitchCaseDefault<V>> fulfillMain = () =>
+            SwitchCaseDefault<V> fulfillMain()
             {
                 if (enableBreak)
                 {
@@ -97,9 +140,9 @@ namespace SwitchFunc
                     ExecutionByCaseValue(action ?? default);
                     return this;
                 }
-            };
+            }
 
-            if (whenInternal ==  default)
+            if (whenInternal == default)
             {
                 if (CaseValue.Equals(SwitchValue))
                 {
@@ -125,13 +168,13 @@ namespace SwitchFunc
                 .Where(v => !v.GetType().IsValueType)
                 .FirstOrDefault();
 
-            Action fulfillMain = () =>
+            void fulfillMain()
             {
                 if (enableBreak)
                 {
                     ExecutionBySwitchValue(action ?? default);
                 }
-            };
+            }
 
             if (IsValueType)
             {
@@ -146,41 +189,11 @@ namespace SwitchFunc
                         fulfillMain();
                     }
                 }
-            }                       
+            }
 
             if (refFiltered == default)
             {
                 fulfillMain();
-            }
-
-            return this;
-        }
-
-        ICase<V> ICase<V>.Accomplish(Action action, bool enableBreak) => CaseAccomplish(v => action(), enableBreak);
-        ICase<V> ICase<V>.Accomplish(Action<V> action, bool enableBreak) => CaseAccomplish(action, enableBreak);
-
-        IDefault<V> ICase<V>.ChangeOverToDefault => this;
-
-        IDefault<V> IDefault<V>.Accomplish(Action action, bool enableBreak) => DefaultAccomplish(v => action(), enableBreak);
-        IDefault<V> IDefault<V>.Accomplish(Action<V> action, bool enableBreak) => DefaultAccomplish(action, enableBreak);
-        
-        V IDefault<V>.Accomplish(Func<V> supplier, bool enableBreak) =>
-            CaseValue.Equals(SwitchValue)
-                ? default
-                : enableBreak
-                    ? Execution(supplier)
-                    : default;
-
-        public SwitchCaseDefault<V> FullEntitiesReset()
-        {
-            if (!IsSwitchValueNull && !IsSwitchValueDefault)
-            {
-                Breaker();
-            }
-
-            if (argsBuilder?.Count > 0)
-            {
-                ResetArgumentList();
             }
 
             return this;
@@ -195,18 +208,5 @@ namespace SwitchFunc
 
             return this;
         }
-
-        public ICase<V> Peek(Action<V> action) => Overwatch(action);
-        ICase<V> ICase<V>.Peek(Action<V> action) => Overwatch(action); //todo implement logic for the case values
-        IDefault<V> IDefault<V>.Peek(Action<V> action) => Overwatch(action); //todo implement logic for the default value only
-
-        public V GetCustomized(Func<V, V> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(SwitchValue) : default;
-        public U GetCustomized<U>(Func<V, U> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(SwitchValue) : default;
-
-        public ImmutableHashSet<V> GetCaseValuesAsImmutableSet() => argsBuilder.ToImmutableHashSet() ?? default;
-        public ImmutableSortedSet<V> GetCaseValuesAsImmutableSortedSet() => argsBuilder.ToImmutableSortedSet() ?? default;
-        public ImmutableList<V> GetCaseValuesAsImmutableList() => argsBuilder.ToImmutable() ?? default;
-                
-        public static implicit operator SwitchCaseDefault<V>(V value) => OfNullable(value);
     }
 }

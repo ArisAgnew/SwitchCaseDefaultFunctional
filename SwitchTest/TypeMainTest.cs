@@ -17,7 +17,7 @@ namespace SwitchTest
         [InlineData(new sbyte[] { (sbyte)SbyteConst.SBYTE1, (sbyte)SbyteConst.SBYTE2, (sbyte)SbyteConst.SBYTE3 })]
         public void SbyteTest(in sbyte[] sbyteArray)
         {
-            _switchValSbyte = 0/*sbyteArray
+            _switchValSbyte = -23/*sbyteArray
                 .Concat(new sbyte[] { -23, 23 })
                 .OrderBy(z => Guid.NewGuid())
                 .Cast<sbyte>()
@@ -33,10 +33,10 @@ namespace SwitchTest
             Assert.True(type.IsValueType);
 
             _switchValSbyte
-                .CaseOf((sbyte)SbyteConst.SBYTE1 + (-23), c => c == -23)
+                .CaseOf((sbyte)SbyteConst.SBYTE1 + (-23), c => c < 0)
                 .Accomplish(v => _output.WriteLine($"First value: {v}"))
 
-                .CaseOf((sbyte)SbyteConst.SBYTE2)
+                .CaseOf((sbyte)SbyteConst.SBYTE2, d => (long)d > 0) //test
                 .Accomplish(v => _output.WriteLine($"Second value: {v}"))
 
                 .CaseOf((sbyte)SbyteConst.SBYTE3)
