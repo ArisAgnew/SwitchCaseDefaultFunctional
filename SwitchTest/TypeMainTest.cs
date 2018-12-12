@@ -33,7 +33,7 @@ namespace SwitchTest
             Assert.True(type.IsValueType);
 
             _switchValSbyte
-                .CaseOf((sbyte)SbyteConst.SBYTE1 + (-23), c => c < 0)
+                .CaseOf((sbyte)SbyteConst.SBYTE1 + (-23), new Predicate<sbyte>(c => c > 0))
                 .Accomplish(v => _output.WriteLine($"First value: {v}"))
 
                 .CaseOf((sbyte)SbyteConst.SBYTE2, d => (long)d > 0) //test

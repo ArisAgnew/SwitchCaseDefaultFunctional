@@ -127,21 +127,6 @@ namespace SwitchFunc
 
         private ICase<V> CaseAccomplish(Action<V> action, bool enableBreak)
         {
-            SwitchCaseDefault<V> fulfillMain()
-            {
-                if (enableBreak)
-                {
-                    ExecutionByCaseValue(action ?? default);
-                    Breaker();
-                    return this;
-                }
-                else
-                {
-                    ExecutionByCaseValue(action ?? default);
-                    return this;
-                }
-            }
-
             if (whenInternal == default)
             {
                 if (CaseValue.Equals(SwitchValue))
@@ -159,6 +144,21 @@ namespace SwitchFunc
                 whenInternal = default;
                 return this;
             }
+
+            SwitchCaseDefault<V> fulfillMain()
+            {
+                if (enableBreak)
+                {
+                    ExecutionByCaseValue(action ?? default);
+                    Breaker();
+                    return this;
+                }
+                else
+                {
+                    ExecutionByCaseValue(action ?? default);
+                    return this;
+                }
+            }
         }
 
         private IDefault<V> DefaultAccomplish(Action<V> action, bool enableBreak)
@@ -166,15 +166,7 @@ namespace SwitchFunc
             var refFiltered = argsBuilder.ToImmutable()
                 .Where(v => v.Equals(SwitchValue))
                 .Where(v => !v.GetType().IsValueType)
-                .FirstOrDefault();
-
-            void fulfillMain()
-            {
-                if (enableBreak)
-                {
-                    ExecutionBySwitchValue(action ?? default);
-                }
-            }
+                .FirstOrDefault();           
 
             if (IsValueType)
             {
@@ -194,6 +186,14 @@ namespace SwitchFunc
             if (refFiltered == default)
             {
                 fulfillMain();
+            }
+
+            void fulfillMain()
+            {
+                if (enableBreak)
+                {
+                    ExecutionBySwitchValue(action ?? default);
+                }
             }
 
             return this;
