@@ -10,7 +10,7 @@ namespace SwitchFunc
         
         ICase<V> CaseOf(V cValue, Predicate<V> when = default);
 
-        ICase<V> CaseDynamicOf(V cValue, Predicate<dynamic> when = default);
+        //ICase<V> CaseDynamicOf(V cValue, Predicate<dynamic> when = default);
 
         ICase<V> Accomplish(Action action = default, bool enableBreak = !default(bool));
                

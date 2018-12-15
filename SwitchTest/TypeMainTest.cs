@@ -447,6 +447,44 @@ namespace SwitchTest
     public partial class TypeMainTest
     {
         [Fact]
+        public void ObjectTest()
+        {
+            var objects = new object[] {
+                (sbyte)SbyteConst.SBYTE2 | (sbyte)SbyteConst.SBYTE3,
+                (short)ShortConst.SHORT2 | (short)ShortConst.SHORT3,
+                (int)IntConst.INT2 | (int)IntConst.INT3,
+                (long)LongConst.LONG2 | (long)LongConst.LONG3,
+                (byte)ByteConst.BYTE2 | (byte)ByteConst.BYTE3,
+                (ushort)UshortConst.USHORT2 | UshortConst.USHORT3,
+                (uint)UintConst.UINT2 | (uint)UintConst.UINT3,
+                (ulong)UlongConst.ULONG2 | (ulong)UlongConst.ULONG3,
+                CharConst.CHAR2 | CharConst.CHAR3,
+                FloatConst.FLOAT1,
+                FloatConst.FLOAT2,
+                FloatConst.FLOAT3,
+                FloatConst.FLOAT4,
+                FloatConst.FLOAT5,
+                FloatConst.FLOAT6,
+                FloatConst.FLOAT7,
+                DoubleConst.DOUBLE1,
+                DoubleConst.DOUBLE2,
+                DoubleConst.DOUBLE3,
+                DoubleConst.DOUBLE4,
+                DoubleConst.DOUBLE5,
+                DoubleConst.DOUBLE6,
+                DoubleConst.DOUBLE7,
+                DecimalConst.DECIMAL1,
+                DecimalConst.DECIMAL2,
+                DecimalConst.DECIMAL3,
+                DecimalConst.DECIMAL4,
+                DecimalConst.DECIMAL5,
+                DecimalConst.DECIMAL6,
+                BooleanConst.BOOL1,
+                BooleanConst.BOOL2,
+            };
+        }
+
+        [Fact]
         public void StringTest()
         {
             _switchRefString = ImmutableList<string>.Empty
@@ -467,14 +505,28 @@ namespace SwitchTest
             Assert.False(type.IsValueType);
 
             _switchRefString
-
                 .CaseOf("USA").Accomplish(v => _output.WriteLine($"First ref: {v}"))
-
                 .CaseOf("CANADA").Accomplish(v => _output.WriteLine($"Second ref: {v}"))
-
                 .CaseOf("AUSTRALIA").Accomplish(v => _output.WriteLine($"Third ref: {v}"))
-
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"));
+        }
+        
+        [Fact]
+        public void StringOneDimentionalArrayTest()
+        {
+
+        }
+
+        [Fact]
+        public void StringTwoDimentionalArrayTest()
+        {
+
+        }
+
+        [Fact]
+        public void StringMultiDimentionalArrayTest()
+        {
+
         }
     }
     #endregion

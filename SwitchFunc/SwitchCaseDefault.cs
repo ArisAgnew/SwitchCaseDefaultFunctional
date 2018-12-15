@@ -16,7 +16,7 @@ namespace SwitchFunc
     {        
         private readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
 
-        private Predicate<V> whenInternal = default;
+        private Predicate<V> whenDefault = default;
         private bool breakerTrigger = default;
 
         private SwitchCaseDefault() { }
@@ -47,14 +47,12 @@ namespace SwitchFunc
 
                 if (when != default)
                 {
-                    whenInternal = when;
+                    whenDefault = when;
                 }
             }
 
             return this;
         }
-
-        public ICase<V> CaseDynamicOf(V cValue, Predicate<dynamic> when = default) => default;
 
         ICase<V> ICase<V>.Accomplish(Action action, bool enableBreak) => CaseAccomplish(v => action(), enableBreak);
         ICase<V> ICase<V>.Accomplish(Action<V> action, bool enableBreak) => CaseAccomplish(action, enableBreak);
@@ -127,7 +125,7 @@ namespace SwitchFunc
 
         private ICase<V> CaseAccomplish(Action<V> action, bool enableBreak)
         {
-            if (whenInternal == default)
+            if (whenDefault == default)
             {
                 if (CaseValue.Equals(SwitchValue))
                 {
@@ -135,13 +133,13 @@ namespace SwitchFunc
                 }
                 else return this;
             }
-            else if (CaseValue.Equals(SwitchValue) && whenInternal.Invoke(CaseValue))
+            else if (CaseValue.Equals(SwitchValue) && whenDefault.Invoke(CaseValue))
             {
                 return fulfillMain();
             }
             else
             {
-                whenInternal = default;
+                whenDefault = default;
                 return this;
             }
 
