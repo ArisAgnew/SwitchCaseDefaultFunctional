@@ -326,11 +326,41 @@ namespace SwitchTest
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
         }
 
-        [Theory]
-        [InlineData(default)]
-        public void DecimalTest(in decimal[] decimalArray)
+        [Fact]
+        public void DecimalTest()
         {
-            //todo
+            var decimalArrayMain = new decimal[] {
+                DecimalConst.DECIMAL1,
+                DecimalConst.DECIMAL2,
+                DecimalConst.DECIMAL3
+            };
+
+            var decimalArrayExtra = new decimal[] {
+                DecimalConst.DECIMAL4,
+                DecimalConst.DECIMAL5,
+                DecimalConst.DECIMAL6
+            };
+
+            _switchValDecimal = decimalArrayMain
+                .Concat(decimalArrayExtra)
+                .OrderBy(z => Guid.NewGuid())
+                .Cast<decimal>()
+                .FirstOrDefault();
+
+            var type = _switchValDecimal
+                .GetType()
+                .GetGenericArguments()
+                .SingleOrDefault();
+
+            Assert.StrictEqual(typeof(decimal), _switchValDecimal.SwitchValue.GetType());
+            Assert.True(type.IsEquivalentTo(typeof(decimal)));
+            Assert.True(type.IsValueType);
+
+            _switchValDecimal
+                .CaseOf(DecimalConst.DECIMAL1).Accomplish(v => _output.WriteLine($"First value: {v}"))
+                .CaseOf(DecimalConst.DECIMAL2).Accomplish(v => _output.WriteLine($"Second value: {v}"))
+                .CaseOf(DecimalConst.DECIMAL3).Accomplish(v => _output.WriteLine($"Third value: {v}"))
+                .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
         }
 
         [Theory]
