@@ -166,7 +166,7 @@ namespace SwitchFunc
             var refFiltered = argsBuilder.ToImmutable()
                 .Where(v => v.Equals(SwitchValue))
                 .Where(v => !v.GetType().IsValueType)
-                .FirstOrDefault();           
+                .FirstOrDefault();
 
             if (IsValueType)
             {
@@ -183,7 +183,7 @@ namespace SwitchFunc
                 }
             }
 
-            if (refFiltered == default)
+            if (!IsValueType && refFiltered == default)
             {
                 fulfillMain();
             }
