@@ -13,8 +13,11 @@ namespace SwitchFunc
     /// Starting with C# 7.0, the match expression can be any non-null expression.
     /// </remarks>
     public sealed partial class SwitchCaseDefault<V> : SwitchFactory<V>, ISwitch<V>, ICase<V>, IDefault<V>
-    {        
-        private readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
+    {
+        private static readonly object synchronized = new object();
+        private static readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
+
+        private static SwitchCaseDefault<V> instance = default;
 
         private Predicate<V> whenDefault = default;
         private bool breakerTrigger = default;
@@ -34,7 +37,18 @@ namespace SwitchFunc
 
         public static SwitchCaseDefault<V> Empty => new SwitchCaseDefault<V>(default);
 
-        public static SwitchCaseDefault<V> Of(V arg) => new SwitchCaseDefault<V>(arg);
+        public static SwitchCaseDefault<V> Of(V arg)
+        {
+            if (instance == default)
+            {
+                lock(synchronized)
+                {
+                    instance = instance ?? new SwitchCaseDefault<V>(arg);
+                }
+            }
+            return instance;
+        }
+
         public static SwitchCaseDefault<V> OfNullable(V arg) => arg != null ? Of(arg) : Empty;
         public static SwitchCaseDefault<V> OfNullable(Func<V> outputValue) => outputValue != null ? Of(outputValue()) : Empty;
         

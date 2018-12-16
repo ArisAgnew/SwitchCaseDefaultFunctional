@@ -17,11 +17,11 @@ namespace SwitchTest
         [InlineData(new sbyte[] { (sbyte)SbyteConst.SBYTE1, (sbyte)SbyteConst.SBYTE2, (sbyte)SbyteConst.SBYTE3 })]
         public void SbyteTest(in sbyte[] sbyteArray)
         {
-            _switchValSbyte = -23/*sbyteArray
+            _switchValSbyte = sbyteArray
                 .Concat(new sbyte[] { -23, 23 })
                 .OrderBy(z => Guid.NewGuid())
                 .Cast<sbyte>()
-                .FirstOrDefault()*/;
+                .FirstOrDefault();
 
             var type = _switchValSbyte
                 .GetType()
@@ -55,11 +55,11 @@ namespace SwitchTest
         [InlineData(new short[] { (short)ShortConst.SHORT1, (short)ShortConst.SHORT2, (short)ShortConst.SHORT3 })]
         public void ShortTest(in short[] shortArray)
         {
-            _switchValShort = 0/*shortArray
+            _switchValShort = shortArray
                 .Concat(new short[] { -23000, 23000 })
                 .OrderBy(z => Guid.NewGuid())
                 .Cast<short>()
-                .FirstOrDefault()*/;
+                .FirstOrDefault();
 
             var type = _switchValShort
                 .GetType()
