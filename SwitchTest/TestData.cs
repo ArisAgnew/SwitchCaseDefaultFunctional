@@ -85,8 +85,11 @@ namespace SwitchTest
         protected SwitchCaseDefault<object> _switchRefObject = default;
         protected SwitchCaseDefault<string> _switchRefString = default;
         protected SwitchCaseDefault<string[]> _switchRefOneDimensionalArray = default;
-        protected SwitchCaseDefault<string[][]> _switchRefTwoDimensionalArray = default;
-        protected SwitchCaseDefault<string[,]> _switchRefMultiDimensionalArray = default;
+        protected SwitchCaseDefault<string[,]> _switchRefTwoDimensionalArray = default;
+        protected SwitchCaseDefault<string[,,]> _switchRefThreeDimensionalArray = default;
+        protected SwitchCaseDefault<string[][]> _switchRefJaggedArray = default;
+        protected SwitchCaseDefault<string[,][]> _switchRefJaggedFirstArray = default;
+        protected SwitchCaseDefault<string[][,]> _switchRefJaggedSecondArray = default;
         #endregion
     }
 }

@@ -450,6 +450,7 @@ namespace SwitchTest
         public void ObjectTest()
         {
             var objects = new object[] {
+                new object(),
                 (sbyte)SbyteConst.SBYTE2 | (sbyte)SbyteConst.SBYTE3,
                 (short)ShortConst.SHORT2 | (short)ShortConst.SHORT3,
                 (int)IntConst.INT2 | (int)IntConst.INT3,
@@ -480,15 +481,61 @@ namespace SwitchTest
                 DecimalConst.DECIMAL5,
                 DecimalConst.DECIMAL6,
                 BooleanConst.BOOL1,
-                BooleanConst.BOOL2,
+                BooleanConst.BOOL2                
             };
+            //todo: end up the array
+            var extraObjects = new object[] {
+                new string(new ReadOnlySpan<char>("CAESAR".ToCharArray())),
+                new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } },
+                new int[][,] {
+                    new int[,] { { 1, 2 }, { 3, 4 } },
+                    new int[,] { { 1, 2 }, { 3, 6 } },
+                    new int[,] { { 1, 2 }, { 3, 5 }, { 8, 13 } }
+                },
+            };
+
+            _switchRefObject = objects
+                .Concat(extraObjects)
+                .OrderBy(z => Guid.NewGuid())
+                .Cast<object>()
+                .FirstOrDefault();
+
+            var type = _switchRefObject
+                .GetType()
+                .GetGenericArguments()
+                .SingleOrDefault();
+
+            Assert.NotStrictEqual(typeof(object), _switchRefObject.SwitchValue.GetType());
+            Assert.True(type.IsEquivalentTo(typeof(object)));
+            Assert.True(!type.IsValueType);
+            Assert.False(type.IsValueType);
+
+            _switchRefObject
+                .CaseOf(new object())
+                .Accomplish(v => _output.WriteLine($"First ref (<new object()>): {v}"))
+
+                .CaseOf(CharConst.CHAR2 | CharConst.CHAR3)
+                .Accomplish(v => _output.WriteLine($"Second ref: {v}"))
+
+                .CaseOf((ulong)UlongConst.ULONG2 | (ulong)UlongConst.ULONG3)
+                .Accomplish(v => _output.WriteLine($"Third ref: {v}"))
+
+                .CaseOf(DecimalConst.DECIMAL4)
+                .Accomplish(v => _output.WriteLine($"Fourth ref: {v}"))
+
+                .CaseOf(new string(new ReadOnlySpan<char>("CAESAR".ToCharArray())))
+                .Accomplish(v => _output.WriteLine($"Fifrth ref: {v}"))
+
+                .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"));
+
+            _output.WriteLine($"{nameof(_switchRefObject.SwitchValue)}: {_switchRefObject.SwitchValue}");
         }
 
         [Fact]
         public void StringTest()
         {
             _switchRefString = ImmutableList<string>.Empty
-                .Add(string.Empty)
+                .Add("GREAT BRITAIN")
                 .Add("USA")
                 .Add("CANADA")
                 .Add("AUSTRALIA")
@@ -524,7 +571,13 @@ namespace SwitchTest
         }
 
         [Fact]
-        public void StringMultiDimentionalArrayTest()
+        public void StringThreeDimentionalArrayTest()
+        {
+
+        }
+
+        [Fact]
+        public void StringJaggedArrayTest()
         {
 
         }
