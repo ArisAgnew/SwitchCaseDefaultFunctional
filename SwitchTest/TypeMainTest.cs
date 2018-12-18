@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 
 using System.Collections.Immutable;
+using SwitchFunc;
 
 namespace SwitchTest
 {
@@ -561,7 +562,17 @@ namespace SwitchTest
         [Fact]
         public void StringOneDimentionalArrayTest()
         {
+            #region offtop
+            SwitchCaseDefault<string> _switch = new Func<string>(() => "AUSTRALIA");
 
+            _switch
+                .CaseOf("USA").Accomplish(v => _output.WriteLine($"First ref: {v}"))
+                .CaseOf("CANADA").Accomplish(v => _output.WriteLine($"Second ref: {v}"))
+                .CaseOf("AUSTRALIA").Accomplish(v => _output.WriteLine($"Third ref: {v}"))
+                .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"));
+
+            _output.WriteLine(_switch.SwitchValue);
+            #endregion offtop
         }
 
         [Fact]

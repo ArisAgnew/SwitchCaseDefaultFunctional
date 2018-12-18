@@ -18,9 +18,8 @@ namespace SwitchFunc
         private static readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
 
         private static SwitchCaseDefault<V> instance = default;
-
-        private Predicate<V> whenDefault = default;
-        private bool breakerTrigger = default;
+        private static Predicate<V> whenDefault = default;
+        private static bool breakerTrigger = default;
 
         private SwitchCaseDefault() { }
         private SwitchCaseDefault(in V inputValue) => SwitchValue = inputValue;
@@ -113,7 +112,11 @@ namespace SwitchFunc
         public ImmutableSortedSet<V> GetCaseValuesAsImmutableSortedSet() => argsBuilder.ToImmutableSortedSet() ?? default;
         public ImmutableList<V> GetCaseValuesAsImmutableList() => argsBuilder.ToImmutable() ?? default;
                 
-        public static implicit operator SwitchCaseDefault<V>(V value) => OfNullable(value);        
+        public static implicit operator SwitchCaseDefault<V>(V value) => OfNullable(value);
+        public static implicit operator SwitchCaseDefault<V>(Func<V> value) => OfNullable(value());
+        //public static implicit operator SwitchCaseDefault<V>(Func<V, V> value) => OfNullable(value(FunctionInput));
+
+        //public static explicit operator SwitchCaseDefault<V>(Func<V, V> value) => OfNullable(value(FunctionInput));
     }
 
     public sealed partial class SwitchCaseDefault<V>
