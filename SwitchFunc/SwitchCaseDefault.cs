@@ -22,13 +22,16 @@ namespace SwitchFunc
         private static bool breakerTrigger = default;
 
         private SwitchCaseDefault() { }
-        private SwitchCaseDefault(in V inputValue) => SwitchValue = inputValue;
+        private SwitchCaseDefault(in V inputValue) => switchValue = inputValue;
 
-        public V SwitchValue { get; set; } = default;
-        public V CaseValue { get; set; } = default;
+        private V switchValue = default;
+        private V caseValue = default;
 
-        private bool IsSwitchValueNull => SwitchValue == null;
-        private bool IsSwitchValueDefault => SwitchValue == default;
+        private V switchValueGhost = default;
+        private V caseValueGhost = default;
+
+        private bool IsSwitchValueNull => switchValue == null;
+        private bool IsSwitchValueDefault => switchValue == default;
 
         private bool IsValueType => (typeof(V) ?? default).IsValueType;
 
@@ -40,7 +43,7 @@ namespace SwitchFunc
         {
             if (instance == default)
             {
-                lock(synchronized)
+                lock (synchronized)
                 {
                     instance = instance ?? new SwitchCaseDefault<V>(arg);
                 }
@@ -55,7 +58,7 @@ namespace SwitchFunc
         {            
             if (!cValue.Equals(default))
             {
-                CaseValue = cValue;
+                caseValue = cValue;
                 argsBuilder?.Add(cValue);
 
                 if (when != default)
@@ -76,7 +79,7 @@ namespace SwitchFunc
         IDefault<V> IDefault<V>.Accomplish(Action<V> action, bool enableBreak) => DefaultAccomplish(action, enableBreak);
         
         V IDefault<V>.AccomplishToGet(Func<V> supplier, bool enableBreak) =>
-            CaseValue.Equals(SwitchValue)
+            caseValue.Equals(switchValue)
                 ? default
                 : enableBreak
                     ? supplier.Equals(default)
@@ -105,8 +108,10 @@ namespace SwitchFunc
         ICase<V> ICase<V>.Peek(Action<V> action) => Overwatch(action); //todo implement logic for the case values
         IDefault<V> IDefault<V>.Peek(Action<V> action) => Overwatch(action); //todo implement logic for the default value only
 
-        public V GetCustomized(Func<V, V> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(SwitchValue) : default;
-        public U GetCustomized<U>(Func<V, U> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(SwitchValue) : default;
+        public V GetSwitch() => switchValue.Equals(default(V)) || switchValue == default ? switchValueGhost : switchValue;
+        public V GetCase() => caseValue.Equals(default(V)) || caseValue == default ? caseValueGhost : caseValue;
+        public V GetCustomized(Func<V, V> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(GetSwitch()) : default;
+        public U GetCustomized<U>(Func<V, U> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(GetSwitch()) : default;
 
         public ImmutableHashSet<V> GetCaseValuesAsImmutableSet() => argsBuilder.ToImmutableHashSet() ?? default;
         public ImmutableSortedSet<V> GetCaseValuesAsImmutableSortedSet() => argsBuilder.ToImmutableSortedSet() ?? default;
@@ -124,7 +129,8 @@ namespace SwitchFunc
         protected sealed override void Breaker() => new Action(() => {
             if (IsValueType)
             {
-                (SwitchValue, CaseValue) = (default, default);
+                (switchValueGhost, caseValueGhost) = (switchValue, caseValue);
+                (switchValue, caseValue) = (default, default);
                 breakerTrigger = true;
             }
             else return;
@@ -132,25 +138,25 @@ namespace SwitchFunc
 
         protected sealed override void ExecutionByCaseValue(Action<V> actionByCaseValue) => new Action(() => {
             if (!IsSwitchValueNull || !IsSwitchValueDefault)
-                actionByCaseValue?.Invoke(CaseValue);
+                actionByCaseValue?.Invoke(caseValue);
         })?.Invoke();
 
         protected sealed override void ExecutionBySwitchValue(Action<V> actionBySwitchValue) => new Action(() => {
             if (!IsSwitchValueNull || !IsSwitchValueDefault)
-                actionBySwitchValue?.Invoke(SwitchValue);
+                actionBySwitchValue?.Invoke(switchValue);
         })?.Invoke();
 
         private ICase<V> CaseAccomplish(Action<V> action, bool enableBreak)
         {
             if (whenDefault == default)
             {
-                if (CaseValue.Equals(SwitchValue))
+                if (caseValue.Equals(switchValue))
                 {
                     return fulfillMain();
                 }
                 else return this;
             }
-            else if (CaseValue.Equals(SwitchValue) && whenDefault.Invoke(CaseValue))
+            else if (caseValue.Equals(switchValue) && whenDefault.Invoke(caseValue))
             {
                 return fulfillMain();
             }
@@ -179,13 +185,13 @@ namespace SwitchFunc
         private IDefault<V> DefaultAccomplish(Action<V> action, bool enableBreak)
         {
             var refFiltered = argsBuilder.ToImmutable()
-                .Where(v => v.Equals(SwitchValue))
+                .Where(v => v.Equals(switchValue))
                 .Where(v => !v.GetType().IsValueType)
                 .FirstOrDefault();
 
             if (IsValueType)
             {
-                if (!SwitchValue.Equals(default(V)))
+                if (!switchValue.Equals(default(V)))
                 {
                     fulfillMain();
                 }
@@ -218,7 +224,7 @@ namespace SwitchFunc
         {
             if (!IsSwitchValueNull || !IsSwitchValueDefault)
             {
-                action?.Invoke(SwitchValue);
+                action?.Invoke(switchValue);
             }
 
             return this;

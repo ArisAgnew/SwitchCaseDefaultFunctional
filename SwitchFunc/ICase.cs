@@ -4,8 +4,6 @@ namespace SwitchFunc
 {
     public interface ICase<V>
     {
-        V CaseValue { get; set; }
-
         IDefault<V> ChangeOverToDefault { get; }
         
         ICase<V> CaseOf(V cValue, Predicate<V> when = default);

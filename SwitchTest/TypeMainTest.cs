@@ -29,7 +29,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(sbyte), _switchValSbyte.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(sbyte), _switchValSbyte.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(sbyte)));
             Assert.True(type.IsValueType);
 
@@ -67,7 +67,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(short), _switchValShort.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(short), _switchValShort.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(short)));
             Assert.True(type.IsValueType);
 
@@ -93,7 +93,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(int), _switchValInt.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(int), _switchValInt.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(int)));
             Assert.True(type.IsValueType);
 
@@ -119,7 +119,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(long), _switchValLong.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(long), _switchValLong.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(long)));
             Assert.True(type.IsValueType);
 
@@ -145,7 +145,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(byte), _switchValByte.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(byte), _switchValByte.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(byte)));
             Assert.True(type.IsValueType);
 
@@ -171,7 +171,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(ushort), _switchValUshort.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(ushort), _switchValUshort.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(ushort)));
             Assert.True(type.IsValueType);
 
@@ -197,7 +197,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(uint), _switchValUint.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(uint), _switchValUint.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(uint)));
             Assert.True(type.IsValueType);
 
@@ -223,7 +223,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(ulong), _switchValUlong.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(ulong), _switchValUlong.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(ulong)));
             Assert.True(type.IsValueType);
 
@@ -252,7 +252,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(char), _switchValChar.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(char), _switchValChar.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(char)));
             Assert.True(type.IsValueType);
 
@@ -283,7 +283,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(float), _switchValFloat.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(float), _switchValFloat.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(float)));
             Assert.True(type.IsValueType);
 
@@ -315,7 +315,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(double), _switchValDouble.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(double), _switchValDouble.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(double)));
             Assert.True(type.IsValueType);
 
@@ -353,7 +353,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(decimal), _switchValDecimal.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(decimal), _switchValDecimal.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(decimal)));
             Assert.True(type.IsValueType);
 
@@ -378,7 +378,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(bool), _switchValBool.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(bool), _switchValBool.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(bool)));
             Assert.True(type.IsValueType);
 
@@ -422,7 +422,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(TypeCode), _switchValEnum.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(TypeCode), _switchValEnum.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(TypeCode)));
             Assert.True(type.IsValueType);
 
@@ -506,7 +506,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.NotStrictEqual(typeof(object), _switchRefObject.SwitchValue.GetType());
+            Assert.NotStrictEqual(typeof(object), _switchRefObject.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(object)));
             Assert.True(!type.IsValueType);
             Assert.False(type.IsValueType);
@@ -529,7 +529,7 @@ namespace SwitchTest
 
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"));
 
-            _output.WriteLine($"{nameof(_switchRefObject.SwitchValue)}: {_switchRefObject.SwitchValue}");
+            _output.WriteLine($"Switch Value: {_switchRefObject.GetSwitch()}");
         }
 
         [Fact]
@@ -547,7 +547,7 @@ namespace SwitchTest
                 .GetGenericArguments()
                 .SingleOrDefault();
 
-            Assert.StrictEqual(typeof(string), _switchRefString.SwitchValue.GetType());
+            Assert.StrictEqual(typeof(string), _switchRefString.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(String)));
             Assert.True(!type.IsValueType);
             Assert.False(type.IsValueType);
@@ -571,7 +571,7 @@ namespace SwitchTest
                 .CaseOf("AUSTRALIA").Accomplish(v => _output.WriteLine($"Third ref: {v}"))
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"));
 
-            _output.WriteLine(_switch.SwitchValue);
+            _output.WriteLine(_switch.GetSwitch());
             #endregion offtop
         }
 
