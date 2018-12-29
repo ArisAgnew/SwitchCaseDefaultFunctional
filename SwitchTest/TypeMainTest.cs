@@ -427,18 +427,18 @@ namespace SwitchTest
             Assert.True(type.IsValueType);
 
             _switchValEnum
-                .CaseOf(TypeCode.Boolean).Accomplish(v => _output.WriteLine($"First value: {v}"))
-                .CaseOf(TypeCode.Char).Accomplish(v => _output.WriteLine($"Second value: {v}"))
-                .CaseOf(TypeCode.SByte).Accomplish(v => _output.WriteLine($"Third value: {v}"))
-                .CaseOf(TypeCode.Byte).Accomplish(v => _output.WriteLine($"Fourth value: {v}"))
-                .CaseOf(TypeCode.Int16).Accomplish(v => _output.WriteLine($"Fifth value: {v}"))
-                .CaseOf(TypeCode.UInt16).Accomplish(v => _output.WriteLine($"Sixth value: {v}"))
-                .CaseOf(TypeCode.Int32).Accomplish(v => _output.WriteLine($"Seventh value: {v}"))
-                .CaseOf(TypeCode.Int64).Accomplish(v => _output.WriteLine($"Eighth value: {v}"))
-                .CaseOf(TypeCode.UInt64).Accomplish(v => _output.WriteLine($"Ninth value: {v}"))
-                .CaseOf(TypeCode.Single).Accomplish(v => _output.WriteLine($"Tenth value: {v}"))
-                .CaseOf(TypeCode.Double).Accomplish(v => _output.WriteLine($"Eleventh value: {v}"))
-                .CaseOf(TypeCode.Decimal).Accomplish(v => _output.WriteLine($"Twelfth value: {v}"))
+                .CaseOf(TypeCode.Boolean).AsyncAccomplish(v => _output.WriteLine($"First value: {v}"))
+                .CaseOf(TypeCode.Char).AsyncAccomplish(v => _output.WriteLine($"Second value: {v}"))
+                .CaseOf(TypeCode.SByte).AsyncAccomplish(v => _output.WriteLine($"Third value: {v}"))
+                .CaseOf(TypeCode.Byte).AsyncAccomplish(v => _output.WriteLine($"Fourth value: {v}"))
+                .CaseOf(TypeCode.Int16).AsyncAccomplish(v => _output.WriteLine($"Fifth value: {v}"))
+                .CaseOf(TypeCode.UInt16).AsyncAccomplish(v => _output.WriteLine($"Sixth value: {v}"))
+                .CaseOf(TypeCode.Int32).AsyncAccomplish(v => _output.WriteLine($"Seventh value: {v}"))
+                .CaseOf(TypeCode.Int64).AsyncAccomplish(v => _output.WriteLine($"Eighth value: {v}"))
+                .CaseOf(TypeCode.UInt64).AsyncAccomplish(v => _output.WriteLine($"Ninth value: {v}"))
+                .CaseOf(TypeCode.Single).AsyncAccomplish(v => _output.WriteLine($"Tenth value: {v}"))
+                .CaseOf(TypeCode.Double).AsyncAccomplish(v => _output.WriteLine($"Eleventh value: {v}"))
+                .CaseOf(TypeCode.Decimal).AsyncAccomplish(v => _output.WriteLine($"Twelfth value: {v}"))
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
         }        
     }
@@ -525,7 +525,7 @@ namespace SwitchTest
                 .Accomplish(v => _output.WriteLine($"Fourth ref: {v}"))
 
                 .CaseOf(new string(new ReadOnlySpan<char>("CAESAR".ToCharArray())))
-                .Accomplish(v => _output.WriteLine($"Fifrth ref: {v}"))
+                .Accomplish(v => _output.WriteLine($"Fifth ref: {v}"))
 
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"));
 
@@ -534,7 +534,7 @@ namespace SwitchTest
 
         [Fact]
         public void StringTest()
-        {
+        {            
             _switchRefString = ImmutableList<string>.Empty
                 .Add("GREAT BRITAIN")
                 .Add("USA")
@@ -548,7 +548,7 @@ namespace SwitchTest
                 .SingleOrDefault();
 
             Assert.StrictEqual(typeof(string), _switchRefString.GetSwitch().GetType());
-            Assert.True(type.IsEquivalentTo(typeof(String)));
+            Assert.True(type.IsEquivalentTo(typeof(string)));
             Assert.True(!type.IsValueType);
             Assert.False(type.IsValueType);
 
@@ -563,15 +563,25 @@ namespace SwitchTest
         public void StringOneDimentionalArrayTest()
         {
             #region offtop
-            SwitchCaseDefault<string> _switch = new Func<string>(() => "AUSTRALIA");
+            SwitchCaseDefault<string> _switch = new Func<string>(() => ImmutableList<string>.Empty
+                .Add("GREAT BRITAIN")
+                .Add("USA")
+                .Add("CANADA")
+                .Add("AUSTRALIA")
+                [new Random().Next(0, 3)]);
 
-            _switch
+            _switch.Peek(v => _output.WriteLine($"after switch peek: {v}"))
                 .CaseOf("USA").Accomplish(v => _output.WriteLine($"First ref: {v}"))
-                .CaseOf("CANADA").Accomplish(v => _output.WriteLine($"Second ref: {v}"))
-                .CaseOf("AUSTRALIA").Accomplish(v => _output.WriteLine($"Third ref: {v}"))
-                .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"));
+                .Peek(v => _output.WriteLine($"after case1 peek: {v}"))
 
-            _output.WriteLine(_switch.GetSwitch());
+                .CaseOf("CANADA").Accomplish(v => _output.WriteLine($"Second ref: {v}"))
+
+                .CaseOf("AUSTRALIA").Accomplish(v => _output.WriteLine($"Third ref: {v}"))
+                .Peek(v => _output.WriteLine($"after case3 peek: {v}"))
+
+                .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"))
+                .Peek(v => _output.WriteLine($"after default peek: {v}"));
+
             #endregion offtop
         }
 

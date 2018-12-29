@@ -10,6 +10,6 @@ namespace SwitchFunc
 
         V AccomplishToGet(Func<V> supplier = default, bool enableBreak = !default(bool));
 
-        IDefault<V> Peek(Action<V> action);
+        IDefault<V> Peek(in Action<V> action);
     }
 }

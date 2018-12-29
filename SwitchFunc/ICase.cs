@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SwitchFunc
 {
@@ -13,7 +14,9 @@ namespace SwitchFunc
         ICase<V> Accomplish(Action action = default, bool enableBreak = !default(bool));
                
         ICase<V> Accomplish(Action<V> action = default, bool enableBreak = !default(bool));
+
+        ICase<V> AsyncAccomplish(Action<V> action = default, bool enableBreak = !default(bool));
                 
-        ICase<V> Peek(Action<V> action);
+        ICase<V> Peek(in Action<V> action);
     }
 }

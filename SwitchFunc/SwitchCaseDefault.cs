@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SwitchFunc
 {
@@ -32,6 +33,9 @@ namespace SwitchFunc
 
         private bool IsSwitchValueNull => switchValue == null;
         private bool IsSwitchValueDefault => switchValue == default;
+
+        private bool IsCaseValueNull => caseValue == null;
+        private bool IsCaseValueDefault => caseValue == default;
 
         private bool IsValueType => (typeof(V) ?? default).IsValueType;
 
@@ -73,6 +77,9 @@ namespace SwitchFunc
         ICase<V> ICase<V>.Accomplish(Action action, bool enableBreak) => CaseAccomplish(v => action(), enableBreak);
         ICase<V> ICase<V>.Accomplish(Action<V> action, bool enableBreak) => CaseAccomplish(action, enableBreak);
 
+        //todo: Temporary method
+        ICase<V> ICase<V>.AsyncAccomplish(Action<V> action, bool enableBreak) => AsyncCaseAccomplish(action, enableBreak).Result;
+
         IDefault<V> ICase<V>.ChangeOverToDefault => this;
 
         IDefault<V> IDefault<V>.Accomplish(Action action, bool enableBreak) => DefaultAccomplish(v => action(), enableBreak);
@@ -104,14 +111,36 @@ namespace SwitchFunc
             return this;
         }        
 
-        public ICase<V> Peek(Action<V> action) => Overwatch(action);
-        ICase<V> ICase<V>.Peek(Action<V> action) => Overwatch(action); //todo implement logic for the case values
-        IDefault<V> IDefault<V>.Peek(Action<V> action) => Overwatch(action); //todo implement logic for the default value only
+        public ICase<V> Peek(in Action<V> action)
+        {
+            if (!IsSwitchValueNull || !IsSwitchValueDefault)
+            {
+                action?.Invoke(switchValue);
+            }
+
+            return this;
+        }
+
+        ICase<V> ICase<V>.Peek(in Action<V> action)
+        {
+            if (!IsCaseValueNull || !IsCaseValueDefault)
+            {
+                action?.Invoke(caseValue);
+            }
+
+            return this;
+        }
+
+        IDefault<V> IDefault<V>.Peek(in Action<V> action) => Peek(action) as IDefault<V> ?? default;
 
         public V GetSwitch() => switchValue.Equals(default(V)) || switchValue == default ? switchValueGhost : switchValue;
         public V GetCase() => caseValue.Equals(default(V)) || caseValue == default ? caseValueGhost : caseValue;
-        public V GetCustomized(Func<V, V> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(GetSwitch()) : default;
-        public U GetCustomized<U>(Func<V, U> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(GetSwitch()) : default;
+
+        public V GetSwitchCustomized(in Func<V, V> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(GetSwitch()) : default;
+        public U GetSwitchCustomized<U>(in Func<V, U> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(GetSwitch()) : default;
+
+        public V GetCaseCustomized(in Func<V, V> funcCustom) => !IsCaseValueNull || !IsCaseValueDefault ? funcCustom(GetCase()) : default;
+        public U GetCaseCustomized<U>(in Func<V, U> funcCustom) => !IsCaseValueNull || !IsCaseValueDefault ? funcCustom(GetCase()) : default;
 
         public ImmutableHashSet<V> GetCaseValuesAsImmutableSet() => argsBuilder.ToImmutableHashSet() ?? default;
         public ImmutableSortedSet<V> GetCaseValuesAsImmutableSortedSet() => argsBuilder.ToImmutableSortedSet() ?? default;
@@ -119,9 +148,6 @@ namespace SwitchFunc
                 
         public static implicit operator SwitchCaseDefault<V>(V value) => OfNullable(value);
         public static implicit operator SwitchCaseDefault<V>(Func<V> value) => OfNullable(value());
-        //public static implicit operator SwitchCaseDefault<V>(Func<V, V> value) => OfNullable(value(FunctionInput));
-
-        //public static explicit operator SwitchCaseDefault<V>(Func<V, V> value) => OfNullable(value(FunctionInput));
     }
 
     public sealed partial class SwitchCaseDefault<V>
@@ -220,14 +246,41 @@ namespace SwitchFunc
             return this;
         }
 
-        private dynamic Overwatch(in Action<V> action)
+        //todo: Temporary method
+        public async Task<ICase<V>> AsyncCaseAccomplish(Action<V> action, bool enableBreak)
         {
-            if (!IsSwitchValueNull || !IsSwitchValueDefault)
+            if (whenDefault == default)
             {
-                action?.Invoke(switchValue);
+                if (caseValue.Equals(switchValue))
+                {
+                    return await Task.Run(() => fulfillMain());
+                }
+                else return this;
+            }
+            else if (caseValue.Equals(switchValue) && whenDefault.Invoke(caseValue))
+            {
+                return await Task.Run(() => fulfillMain());
+            }
+            else
+            {
+                whenDefault = default;
+                return this;
             }
 
-            return this;
+            SwitchCaseDefault<V> fulfillMain()
+            {
+                if (enableBreak)
+                {
+                    ExecutionByCaseValue(action ?? default);
+                    Breaker();
+                    return this;
+                }
+                else
+                {
+                    ExecutionByCaseValue(action ?? default);
+                    return this;
+                }
+            }
         }
     }
 }

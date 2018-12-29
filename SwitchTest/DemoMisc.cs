@@ -24,7 +24,7 @@ namespace SwitchTest
                 .ChangeOverToDefault.Accomplish(v => output = v);
 
             _output.WriteLine(output.ToString()); // there is no needful to use it, use GetCustomized() instead
-            _output.WriteLine(_switch.GetCustomized(i => i).ToString());
+            _output.WriteLine(_switch.GetSwitchCustomized(i => i).ToString());
             _output.WriteLine(_switch.GetSwitch().ToString());
 
             //============================================================
@@ -37,7 +37,7 @@ namespace SwitchTest
                 .ChangeOverToDefault.Accomplish(v => output = v);
 
             _output.WriteLine(output.ToString());
-            _output.WriteLine(_switch1.GetCustomized(s => s));
+            _output.WriteLine(_switch1.GetCaseCustomized(s => s));
             _output.WriteLine(_switch1.GetSwitch().ToString());
         }
     }
