@@ -427,18 +427,18 @@ namespace SwitchTest
             Assert.True(type.IsValueType);
 
             _switchValEnum
-                .CaseOf(TypeCode.Boolean).AsyncAccomplish(v => _output.WriteLine($"First value: {v}"))
-                .CaseOf(TypeCode.Char).AsyncAccomplish(v => _output.WriteLine($"Second value: {v}"))
-                .CaseOf(TypeCode.SByte).AsyncAccomplish(v => _output.WriteLine($"Third value: {v}"))
-                .CaseOf(TypeCode.Byte).AsyncAccomplish(v => _output.WriteLine($"Fourth value: {v}"))
-                .CaseOf(TypeCode.Int16).AsyncAccomplish(v => _output.WriteLine($"Fifth value: {v}"))
-                .CaseOf(TypeCode.UInt16).AsyncAccomplish(v => _output.WriteLine($"Sixth value: {v}"))
-                .CaseOf(TypeCode.Int32).AsyncAccomplish(v => _output.WriteLine($"Seventh value: {v}"))
-                .CaseOf(TypeCode.Int64).AsyncAccomplish(v => _output.WriteLine($"Eighth value: {v}"))
-                .CaseOf(TypeCode.UInt64).AsyncAccomplish(v => _output.WriteLine($"Ninth value: {v}"))
-                .CaseOf(TypeCode.Single).AsyncAccomplish(v => _output.WriteLine($"Tenth value: {v}"))
-                .CaseOf(TypeCode.Double).AsyncAccomplish(v => _output.WriteLine($"Eleventh value: {v}"))
-                .CaseOf(TypeCode.Decimal).AsyncAccomplish(v => _output.WriteLine($"Twelfth value: {v}"))
+                .CaseOf(TypeCode.Boolean).Accomplish(v => _output.WriteLine($"First value: {v}"))
+                .CaseOf(TypeCode.Char).Accomplish(v => _output.WriteLine($"Second value: {v}"))
+                .CaseOf(TypeCode.SByte).Accomplish(v => _output.WriteLine($"Third value: {v}"))
+                .CaseOf(TypeCode.Byte).Accomplish(v => _output.WriteLine($"Fourth value: {v}"))
+                .CaseOf(TypeCode.Int16).Accomplish(v => _output.WriteLine($"Fifth value: {v}"))
+                .CaseOf(TypeCode.UInt16).Accomplish(v => _output.WriteLine($"Sixth value: {v}"))
+                .CaseOf(TypeCode.Int32).Accomplish(v => _output.WriteLine($"Seventh value: {v}"))
+                .CaseOf(TypeCode.Int64).Accomplish(v => _output.WriteLine($"Eighth value: {v}"))
+                .CaseOf(TypeCode.UInt64).Accomplish(v => _output.WriteLine($"Ninth value: {v}"))
+                .CaseOf(TypeCode.Single).Accomplish(v => _output.WriteLine($"Tenth value: {v}"))
+                .CaseOf(TypeCode.Double).Accomplish(v => _output.WriteLine($"Eleventh value: {v}"))
+                .CaseOf(TypeCode.Decimal).Accomplish(v => _output.WriteLine($"Twelfth value: {v}"))
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default value: {vDef}"));
         }        
     }

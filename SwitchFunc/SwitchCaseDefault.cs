@@ -77,9 +77,6 @@ namespace SwitchFunc
         ICase<V> ICase<V>.Accomplish(Action action, bool enableBreak) => CaseAccomplish(v => action(), enableBreak);
         ICase<V> ICase<V>.Accomplish(Action<V> action, bool enableBreak) => CaseAccomplish(action, enableBreak);
 
-        //todo: Temporary method
-        ICase<V> ICase<V>.AsyncAccomplish(Action<V> action, bool enableBreak) => AsyncCaseAccomplish(action, enableBreak).Result;
-
         IDefault<V> ICase<V>.ChangeOverToDefault => this;
 
         IDefault<V> IDefault<V>.Accomplish(Action action, bool enableBreak) => DefaultAccomplish(v => action(), enableBreak);
@@ -152,7 +149,8 @@ namespace SwitchFunc
 
     public sealed partial class SwitchCaseDefault<V>
     {
-        protected sealed override void Breaker() => new Action(() => {
+        protected sealed override void Breaker()
+        {
             if (IsValueType)
             {
                 (switchValueGhost, caseValueGhost) = (switchValue, caseValue);
@@ -160,17 +158,19 @@ namespace SwitchFunc
                 breakerTrigger = true;
             }
             else return;
-        })?.Invoke();
+        }
 
-        protected sealed override void ExecutionByCaseValue(Action<V> actionByCaseValue) => new Action(() => {
-            if (!IsSwitchValueNull || !IsSwitchValueDefault)
+        protected sealed override void ExecutionByCaseValue(Action<V> actionByCaseValue)
+        {
+            if (!IsSwitchValueNull || !IsSwitchValueDefault) //???
                 actionByCaseValue?.Invoke(caseValue);
-        })?.Invoke();
+        }
 
-        protected sealed override void ExecutionBySwitchValue(Action<V> actionBySwitchValue) => new Action(() => {
+        protected sealed override void ExecutionBySwitchValue(Action<V> actionBySwitchValue)
+        {
             if (!IsSwitchValueNull || !IsSwitchValueDefault)
                 actionBySwitchValue?.Invoke(switchValue);
-        })?.Invoke();
+        }
 
         private ICase<V> CaseAccomplish(Action<V> action, bool enableBreak)
         {
@@ -244,43 +244,6 @@ namespace SwitchFunc
             }
 
             return this;
-        }
-
-        //todo: Temporary method
-        public async Task<ICase<V>> AsyncCaseAccomplish(Action<V> action, bool enableBreak)
-        {
-            if (whenDefault == default)
-            {
-                if (caseValue.Equals(switchValue))
-                {
-                    return await Task.Run(() => fulfillMain());
-                }
-                else return this;
-            }
-            else if (caseValue.Equals(switchValue) && whenDefault.Invoke(caseValue))
-            {
-                return await Task.Run(() => fulfillMain());
-            }
-            else
-            {
-                whenDefault = default;
-                return this;
-            }
-
-            SwitchCaseDefault<V> fulfillMain()
-            {
-                if (enableBreak)
-                {
-                    ExecutionByCaseValue(action ?? default);
-                    Breaker();
-                    return this;
-                }
-                else
-                {
-                    ExecutionByCaseValue(action ?? default);
-                    return this;
-                }
-            }
         }
     }
 }
