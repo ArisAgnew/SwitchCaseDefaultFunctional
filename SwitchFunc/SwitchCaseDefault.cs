@@ -162,7 +162,7 @@ namespace SwitchFunc
 
         protected sealed override void ExecutionByCaseValue(Action<V> actionByCaseValue)
         {
-            if (!IsSwitchValueNull || !IsSwitchValueDefault) //???
+            if (!IsCaseValueNull || !IsCaseValueDefault)
                 actionByCaseValue?.Invoke(caseValue);
         }
 
