@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SwitchFunc
 {
     /// <summary>
-    /// Switch class is a functional wrapper of the regular switch operator
+    /// Switch class is a functional wrapper of regular switch operator
     /// with other-following operators such as 'case', 'when', 'default';
     /// </summary>
     /// <typeparam name="V"></typeparam> 

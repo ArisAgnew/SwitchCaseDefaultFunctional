@@ -24,18 +24,18 @@ namespace SwitchFunc
         protected abstract void Breaker();
 
         /// <summary>
-        /// 
+        /// The main execution in relation to 'switch' value
         /// </summary>
         /// <param name="actionBySwitchValue">
-        /// 
+        /// Action using as an inbound parameter the very 'switch' value
         /// </param>
         protected abstract void ExecutionBySwitchValue(Action<V> actionBySwitchValue = default);
 
         /// <summary>
-        /// 
+        /// The main execution in relation to 'case' value
         /// </summary>
         /// <param name="actionByCaseValue">
-        /// 
+        /// Action using as an inbound parameter the very 'case' value
         /// </param>
         protected abstract void ExecutionByCaseValue(Action<V> actionByCaseValue = default);
     }
