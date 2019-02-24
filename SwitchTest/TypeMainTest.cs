@@ -5,15 +5,18 @@ using System.Linq;
 
 using System.Collections.Immutable;
 using SwitchFunc;
+using static SwitchTest.Constants;
+using static SwitchTest.TestData;
 
 namespace SwitchTest
 {
     #region Value Types Unit Tests
-    public partial class TypeMainTest : TestData
+    public partial class TypeMainTest
     {
         private readonly ITestOutputHelper _output;
+
         public TypeMainTest(ITestOutputHelper output) => _output = output;
-                
+
         [Theory]
         [InlineData(new sbyte[] { (sbyte)SbyteConst.SBYTE1, (sbyte)SbyteConst.SBYTE2, (sbyte)SbyteConst.SBYTE3 })]
         public void SbyteTest(in sbyte[] sbyteArray)
@@ -484,10 +487,18 @@ namespace SwitchTest
                 BooleanConst.BOOL1,
                 BooleanConst.BOOL2                
             };
-            //todo: end up the array
+            
             var extraObjects = new object[] {
                 new string(new ReadOnlySpan<char>("CAESAR".ToCharArray())),
                 new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } },
+                new int[,,] { 
+                    { { 1, 2, 3 }, { 4, 5, 6 } },
+                    { { 7, 8, 9 }, { 10, 11, 12 } }
+                },
+                new int[2, 2, 3] { 
+                    { { 1, 2, 3 }, { 4, 5, 6 } },
+                    { { 7, 8, 9 }, { 10, 11, 12 } }
+                },
                 new int[][,] {
                     new int[,] { { 1, 2 }, { 3, 4 } },
                     new int[,] { { 1, 2 }, { 3, 6 } },
@@ -529,7 +540,8 @@ namespace SwitchTest
 
                 .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"));
 
-            _output.WriteLine($"Switch Value: {_switchRefObject.GetSwitch()}");
+            _output.WriteLine($"Switch Value: {_switchRefObject.GetSwitch()};\n" +
+                $"Type of SwitchValue: {_switchRefObject.GetType().GetGenericArguments().SingleOrDefault()}");
         }
 
         [Fact]
@@ -564,43 +576,28 @@ namespace SwitchTest
         {
             #region offtop
             SwitchCaseDefault<string> _switch = new Func<string>(() => ImmutableList<string>.Empty
-                .Add("GREAT BRITAIN")
-                .Add("USA")
-                .Add("CANADA")
-                .Add("AUSTRALIA")
+                .Add("Sub Zero")
+                .Add("Scorpion")
+                .Add("Shao Kahn")
+                .Add("Shang Tsung")
                 [new Random().Next(0, 3)]);
 
             _switch.Peek(v => _output.WriteLine($"after switch peek: {v}"))
-                .CaseOf("USA").Accomplish(v => _output.WriteLine($"First ref: {v}"))
+                .CaseOf("Sub Zero")
+                .Accomplish(v => _output.WriteLine($"First ref: {v}"))
                 .Peek(v => _output.WriteLine($"after case1 peek: {v}"))
 
-                .CaseOf("CANADA").Accomplish(v => _output.WriteLine($"Second ref: {v}"))
+                .CaseOf("Shao Kahn")
+                .Accomplish(v => _output.WriteLine($"Second ref: {v}"))
 
-                .CaseOf("AUSTRALIA").Accomplish(v => _output.WriteLine($"Third ref: {v}"))
+                .CaseOf("Shang Tsung")
+                .Accomplish(v => _output.WriteLine($"Third ref: {v}"))
                 .Peek(v => _output.WriteLine($"after case3 peek: {v}"))
 
-                .ChangeOverToDefault.Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"))
+                .ChangeOverToDefault
+                .Accomplish(vDef => _output.WriteLine($"Default ref: <{vDef}> <i.e. string.Empty>"))
                 .Peek(v => _output.WriteLine($"after default peek: {v}"));
-
             #endregion offtop
-        }
-
-        [Fact]
-        public void StringTwoDimentionalArrayTest()
-        {
-
-        }
-
-        [Fact]
-        public void StringThreeDimentionalArrayTest()
-        {
-
-        }
-
-        [Fact]
-        public void StringJaggedArrayTest()
-        {
-
         }
     }
     #endregion

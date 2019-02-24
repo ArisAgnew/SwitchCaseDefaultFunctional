@@ -9,7 +9,8 @@ namespace SwitchTest
         private readonly ITestOutputHelper _output;
         public DemoMisc(ITestOutputHelper output) => _output = output;
 
-        [Fact]
+#pragma warning disable xUnit1004 // Test methods should not be skipped
+        [Fact(Skip = "Skipped")]
         public void Demo1()
         {
             SwitchCaseDefault<int> _switch = 65536;
@@ -40,5 +41,6 @@ namespace SwitchTest
             _output.WriteLine(_switch1.GetCaseCustomized(s => s));
             _output.WriteLine(_switch1.GetSwitch().ToString());
         }
+#pragma warning restore xUnit1004 // Test methods should not be skipped
     }
 }
