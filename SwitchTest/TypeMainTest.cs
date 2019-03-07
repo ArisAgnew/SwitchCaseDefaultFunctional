@@ -2,9 +2,9 @@ using Xunit;
 using Xunit.Abstractions;
 using System;
 using System.Linq;
-
 using System.Collections.Immutable;
 using SwitchFunc;
+
 using static SwitchTest.Constants;
 using static SwitchTest.TestData;
 
