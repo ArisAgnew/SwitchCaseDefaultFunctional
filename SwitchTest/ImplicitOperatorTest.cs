@@ -99,7 +99,7 @@ namespace SwitchTest
             ISet<object> __data = _data.Where(d => d != null || d != default).ToHashSet();
 
             Assert.All(__data, item => {
-                Assert.True(!_plainValue.GetType().HasImplicitConversionWith(item.GetType()));
+                Assert.True(_plainValue.GetType().HasImplicitConversionWith(item.GetType()));
             });
         }
     }
