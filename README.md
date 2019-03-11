@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.com/ArisAgnew/SwitchCaseDefaultFunctional.svg?branch=master)](https://travis-ci.com/ArisAgnew/SwitchCaseDefaultFunctional)
 
+[![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/ArisAgnew/SwitchCaseDefaultFunctional/master.svg)](https://ci.appveyor.com/project/ArisAgnew/switchcasedefaultfunctional)
+
 # SwitchCaseFunctional
 This module is designed to write ordinary "switch-case-default" construction in a functional representation primarily.
 
