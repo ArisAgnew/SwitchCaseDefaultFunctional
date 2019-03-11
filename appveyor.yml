@@ -9,7 +9,6 @@ configuration: Release
 
 # Build worker image (VM template)
 image: Visual Studio 2017
-mono: none
 dotnet: 2.1.300
 # pushing all *.nupkg files in build directory recursively
 artifacts:
