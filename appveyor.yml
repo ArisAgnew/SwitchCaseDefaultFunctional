@@ -29,7 +29,6 @@ before_test:
   - cmd: dotnet --version
   - cmd: echo IT HAS BEGUN
   - cmd: dotnet restore
-  - cmd: dotnet --verbose build
   - cmd: dotnet --info
 
 # to run your custom scripts instead of automatic tests
