@@ -10,6 +10,10 @@ branches:
   only:
   - master
 
+init:
+  # Good practise, because Windows line endings are different from Unix/Linux ones
+  - cmd: git config --global core.autocrlf true
+
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Release
 
@@ -26,6 +30,10 @@ dotnet_csproj:
   file_version: '{version}'
   informational_version: '{version}'
 
+  
+build_script:
+  - cmd: dotnet build SwitchFunc.sln
+
 # scripts to run before tests (working directory and environment changes are persisted from the previous steps such as "before_build")
 before_test:
   - cmd: dotnet --version
@@ -36,8 +44,14 @@ before_test:
 # to run your custom scripts instead of automatic tests
 test_script:
   - cmd: echo This is my custom test script
-  - cmd: dotnet test ./SwitchTest
+
+  - cmd: cd SwitchTest
+  - cmd: nuget install Appveyor.TestLogger -Version 2.0.0
+  - cmd: cd ..
+  - cmd: dotnet test --no-build --no-restore --test-adapter-path:. --logger:Appveyor Test
+  #- cmd: dotnet test ./SwitchTest
 
 # scripts to run after tests
 after_test:
   - cmd: echo THIS IS IT
+  
