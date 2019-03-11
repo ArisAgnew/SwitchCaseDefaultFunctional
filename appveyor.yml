@@ -9,6 +9,11 @@ configuration: Release
 
 # Build worker image (VM template)
 image: Visual Studio 2017
+mono: none
+dotnet: 2.1.300
+# pushing all *.nupkg files in build directory recursively
+artifacts:
+  - path: '**\*.nupkg'
 
 # scripts to run before tests (working directory and environment changes are persisted from the previous steps such as "before_build")
 before_test:
