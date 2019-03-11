@@ -4,26 +4,30 @@ build:
   parallel: true
   project: SwitchFunc.sln
 
+branches:
+  only:
+  - master
+
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Release
 
 # Build worker image (VM template)
 # image: Visual Studio 2017
-# pushing all *.nupkg files in build directory recursively
-artifacts:
-  - path: '**\*.nupkg'
+
+deploy: off
 
 # scripts to run before tests (working directory and environment changes are persisted from the previous steps such as "before_build")
 before_test:
-  - echo IT HAS BEGUN
-  - dotnet restore
-  - dotnet --info
+  - cmd: dotnet --version
+  - cmd: echo IT HAS BEGUN
+  - cmd: dotnet restore
+  - cmd: dotnet --info
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - echo This is my custom test script
-  - dotnet test ./SwitchTest
+  - cmd: echo This is my custom test script
+  - cmd: dotnet test ./SwitchTest
 
 # scripts to run after tests
 after_test:
-  - echo THIS IS IT
+  - cmd: echo THIS IS IT
