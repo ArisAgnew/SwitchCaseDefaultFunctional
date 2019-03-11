@@ -15,6 +15,16 @@ configuration: Release
 image: Visual Studio 2017
 
 deploy: off
+dotnet: 2.1.300
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
 
 # scripts to run before tests (working directory and environment changes are persisted from the previous steps such as "before_build")
 before_test:
