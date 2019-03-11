@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/ArisAgnew/SwitchCaseDefaultFunctional.svg?label=travis%20%7C%20build&branch=master)](https://travis-ci.com/ArisAgnew/SwitchCaseDefaultFunctional)
+[![Build Status](https://travis-ci.com/ArisAgnew/SwitchCaseDefaultFunctional.svg?branch=master)](https://travis-ci.com/ArisAgnew/SwitchCaseDefaultFunctional)
 
 ![AppVeyor](https://img.shields.io/appveyor/ci/ArisAgnew/SwitchCaseDefaultFunctional.svg?label=appveyor%20%7C%20build)
 
