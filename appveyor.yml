@@ -45,7 +45,7 @@ build_script:
   - ps: dotnet --info
   # Run dotnet new
   - ps: mkdir "test\test-dotnet-new" -Force | Push-Location
-  - ps: dotnet new console -lang f#
+  - ps: dotnet new console -lang c#
   - ps: dotnet restore
   - ps: dotnet build
   - ps: dotnet run a b
@@ -64,7 +64,6 @@ test_script:
 
   - cmd: cd SwitchTest
   - cmd: nuget install Appveyor.TestLogger -Version 2.0.0
-  - cmd: cd ..
   - cmd: dotnet test --no-build --no-restore --test-adapter-path:. --logger:Appveyor Test
   #- cmd: dotnet test ./SwitchTest
 
