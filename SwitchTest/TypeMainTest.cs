@@ -1,9 +1,11 @@
+using SwitchFunc;
+
+using System;
+using System.Collections.Immutable;
+using System.Linq;
+
 using Xunit;
 using Xunit.Abstractions;
-using System;
-using System.Linq;
-using System.Collections.Immutable;
-using SwitchFunc;
 
 using static SwitchTest.Constants;
 using static SwitchTest.TestData;
@@ -11,9 +13,9 @@ using static SwitchTest.TestData;
 namespace SwitchTest
 {
     #region Value Types Unit Tests
-    public partial class TypeMainTest
+    public sealed partial class TypeMainTest
     {
-        private readonly ITestOutputHelper _output;
+        private readonly ITestOutputHelper _output = default;
 
         public TypeMainTest(ITestOutputHelper output) => _output = output;
 
