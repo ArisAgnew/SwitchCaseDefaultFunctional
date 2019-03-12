@@ -104,8 +104,9 @@ namespace SwitchFunc
             }
 
             return this;
-        }        
+        }
 
+        //It goes after switch start-point
         public ICase<V> Peek(in Action<V> action)
         {
             if (!IsSwitchValueNull || !IsSwitchValueDefault)
@@ -116,16 +117,10 @@ namespace SwitchFunc
             return this;
         }
 
-        ICase<V> ICase<V>.Peek(in Action<V> action)
-        {
-            if (!IsCaseValueNull || !IsCaseValueDefault)
-            {
-                action?.Invoke(caseValue);
-            }
+        //It goes after case middle-point(s)
+        ICase<V> ICase<V>.Peek(in Action<V> action) => Peek(action) as ICase<V> ?? default;
 
-            return this;
-        }
-
+        //It goes after default end-point
         IDefault<V> IDefault<V>.Peek(in Action<V> action) => Peek(action) as IDefault<V> ?? default;
 
         public V GetSwitch() => switchValue.Equals(default(V)) || switchValue == default ? switchValueGhost : switchValue;
@@ -140,7 +135,7 @@ namespace SwitchFunc
         public ImmutableHashSet<V> GetCaseValuesAsImmutableSet() => argsBuilder.ToImmutableHashSet() ?? default;
         public ImmutableSortedSet<V> GetCaseValuesAsImmutableSortedSet() => argsBuilder.ToImmutableSortedSet() ?? default;
         public ImmutableList<V> GetCaseValuesAsImmutableList() => argsBuilder.ToImmutable() ?? default;
-                
+
         public static implicit operator SwitchCaseDefault<V>(V value) => OfNullable(value);
         public static implicit operator SwitchCaseDefault<V>(Func<V> value) => OfNullable(value());
     }
