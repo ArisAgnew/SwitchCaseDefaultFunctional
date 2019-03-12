@@ -3,11 +3,10 @@
 using SwitchTest.Arrangement;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 using static SwitchTest.Constants;
 
@@ -17,12 +16,14 @@ namespace SwitchTest
     {
         private readonly ITestOutputHelper _output = default;
         private readonly object[] _data = default;
+        private readonly object[] _empty = default;
 
-        private static SwitchCaseDefault<object> _plainValue = SwitchCaseDefault<object>.EMPTY;
+        private static SwitchCaseDefault<object> _plainValue = default;
         
         public ImplicitOperatorTest(ITestOutputHelper output)
         {
             _output = output;
+            _empty = new object[] { null, default };
             _data = new object[] {
                 (sbyte)SbyteConst.SBYTE2 | (sbyte)SbyteConst.SBYTE3,
                 (short)ShortConst.SHORT2 | (short)ShortConst.SHORT3,
@@ -54,9 +55,7 @@ namespace SwitchTest
                 DecimalConst.DECIMAL5,
                 DecimalConst.DECIMAL6,
                 BooleanConst.BOOL1,
-                BooleanConst.BOOL2,
-                null,
-                default
+                BooleanConst.BOOL2
             };
         }
 
@@ -96,10 +95,53 @@ namespace SwitchTest
         [Fact]
         public void ImplicitConversionTest()
         {
-            ISet<object> __data = _data.Where(d => d != null || d != default).ToHashSet();
-
-            Assert.All(__data, item => {
+            Assert.All(_data, item => {
                 Assert.True(_plainValue.GetType().HasImplicitConversionWith(item.GetType()));
+            });
+        }
+
+        [Fact]
+        public void DefaultNull_PlainValueOughtToBeInitializedTest()
+        {
+            Assert.All(_empty, item => {
+                _plainValue = item;
+
+                Assert.NotNull(_plainValue);
+                Assert.NotEqual<object>(_plainValue, item);
+                Assert.ThrowsAny<EqualException>(() => Assert.Equal<object>(_plainValue, item));
+            });
+        }
+
+        [Fact]
+        public void DefaultNull_CastedSupplierOughtToBeInitializedTest()
+        {
+            Assert.All(_empty, item => {
+                _plainValue = (Func<object>)(() => item);
+
+                Assert.NotNull(_plainValue);
+                Assert.NotEqual<object>(_plainValue, item);
+                Assert.ThrowsAny<EqualException>(() => Assert.Equal<object>(_plainValue, item));
+            });
+        }
+
+        [Fact]
+        public void DefaultNull_SupplierAsAnObjectOughtToBeInitializedTest()
+        {
+            Assert.All(_empty, item => {
+                _plainValue = new Func<object>(() => item);
+
+                Assert.NotNull(_plainValue);
+                Assert.NotEqual<object>(_plainValue, item);
+                Assert.ThrowsAny<EqualException>(() => Assert.Equal<object>(_plainValue, item));
+            });
+        }
+
+        [Fact]
+        public void DefaultNull_ImplicitConversionTest()
+        {
+            Assert.All(_empty, item => {
+                Assert.ThrowsAny<NullReferenceException>(() => 
+                    Assert.True(_plainValue.GetType().HasImplicitConversionWith(item.GetType())));
             });
         }
     }
