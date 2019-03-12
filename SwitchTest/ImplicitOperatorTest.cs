@@ -12,7 +12,7 @@ using static SwitchTest.Constants;
 
 namespace SwitchTest
 {
-    public class ImplicitOperatorTest
+    public sealed class ImplicitOperatorTest
     {
         private readonly ITestOutputHelper _output = default;
         private readonly object[] _data = default;
@@ -59,6 +59,7 @@ namespace SwitchTest
             };
         }
 
+        #region Check up on real non-null or non-default entities
         [Fact]
         public void PlainValueOughtToBeInitializedTest()
         {
@@ -99,7 +100,9 @@ namespace SwitchTest
                 Assert.True(_plainValue.GetType().HasImplicitConversionWith(item.GetType()));
             });
         }
+        #endregion Check up on real non-null or non-default entities
 
+        #region Check up on merely null and default entities
         [Fact]
         public void DefaultNull_PlainValueOughtToBeInitializedTest()
         {
@@ -144,5 +147,6 @@ namespace SwitchTest
                     Assert.True(_plainValue.GetType().HasImplicitConversionWith(item.GetType())));
             });
         }
+        #endregion Check up on merely null and default entities
     }
 }
