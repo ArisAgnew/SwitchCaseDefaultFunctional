@@ -16,7 +16,7 @@ namespace SwitchFunc
     {
         private static readonly object synchronized = new object();
         private static readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
-        public static readonly SwitchCaseDefault<V> EMPTY = new SwitchCaseDefault<V>(default);
+        private static readonly SwitchCaseDefault<V> EMPTY = new SwitchCaseDefault<V>(default);
 
         private static SwitchCaseDefault<V> instance = default;
         private static Predicate<V> whenDefault = default;
@@ -43,14 +43,10 @@ namespace SwitchFunc
         
         public static SwitchCaseDefault<V> Of(V arg)
         {
-            if (instance == default)
+            lock (synchronized)
             {
-                lock (synchronized)
-                {
-                    instance = instance ?? new SwitchCaseDefault<V>(arg);
-                }
+                return instance ?? (instance = new SwitchCaseDefault<V>(arg));
             }
-            return instance;
         }
 
         public static SwitchCaseDefault<V> OfNullable(V arg) => arg != null ? Of(arg) : EMPTY;
