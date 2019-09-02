@@ -6,8 +6,12 @@ mono: none
 addons:
   snaps:
   - name: dotnet-sdk
-  #- confinement: classic
+  - confinement: classic
   - channel: latest/beta
+
+install:
+  - nuget restore SwitchTest.csproj
+  - nuget install xunit.runners -Version 2.4.1 -OutputDirectory testrunner
 
 before_script:
   - sudo snap alias dotnet-sdk.dotnet dotnet
@@ -15,4 +19,4 @@ before_script:
   - dotnet --version
 
 script:
-  - dotnet test ./SwitchTest
+  - dotnet test
