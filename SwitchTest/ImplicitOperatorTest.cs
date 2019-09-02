@@ -18,6 +18,8 @@ namespace SwitchTest
         private readonly object[] _data = default;
         private readonly object[] _empty = default;
 
+        //Tuple to go
+
         private static SwitchCaseDefault<object> _plainValue = default;
         
         public ImplicitOperatorTest(ITestOutputHelper output)

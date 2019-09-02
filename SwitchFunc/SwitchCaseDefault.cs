@@ -204,8 +204,7 @@ namespace SwitchFunc
         private IDefault<V> DefaultAccomplish(Action<V> action, bool enableBreak)
         {
             var refFiltered = argsBuilder.ToImmutable()
-                .Where(v => v.Equals(switchValue))
-                .Where(v => !v.GetType().IsValueType)
+                .Where(v => v.Equals(switchValue) && !v.GetType().IsValueType)
                 .FirstOrDefault();
 
             if (IsValueType)
