@@ -1,6 +1,6 @@
 language: csharp  
 sudo: required  
-dist: trusty  
+dist: xenial  
 mono: none
 #dotnet: 3.0.100-preview8-013656
 addons:
@@ -9,11 +9,7 @@ addons:
     classic: true
     channel: latest/beta
 
-before_script:
-  - sudo snap alias dotnet-sdk.dotnet dotnet
-  - dotnet restore
-  - dotnet --info
-  - dotnet --version
-
 script:
+  - sudo snap alias dotnet-sdk.dotnet dotnet
+  - dotnet --version
   - dotnet test ./SwitchTest
