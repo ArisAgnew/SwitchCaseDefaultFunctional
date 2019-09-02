@@ -7,7 +7,7 @@ addons:
   snaps:
   - name: dotnet-sdk
   - classic: true
-  - channel: latest/beta
+  - channel: latest
 
 before_script:
   - sudo snap alias dotnet-sdk.dotnet dotnet
