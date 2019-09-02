@@ -6,8 +6,8 @@ mono: none
 addons:
   snaps:
   - name: dotnet-sdk
-    classic: true
-    channel: latest/beta
+  - confinement: classic
+  - channel: latest/beta
 
 before_script:
   - sudo snap alias dotnet-sdk.dotnet dotnet
