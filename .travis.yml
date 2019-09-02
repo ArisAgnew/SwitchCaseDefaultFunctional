@@ -9,7 +9,10 @@ addons:
     classic: true
     channel: latest/beta
 
-script:
+before_script:
   - sudo snap alias dotnet-sdk.dotnet dotnet
+  - dotnet --info
   - dotnet --version
+
+script:
   - dotnet test ./SwitchTest
