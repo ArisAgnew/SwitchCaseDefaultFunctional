@@ -2,15 +2,15 @@ language: csharp
 sudo: required
 dist: xenial  
 mono: none
-#dotnet: 3.0.100-preview8-013656
-addons:
-  snaps:
-  - name: dotnet-sdk
-  - classic: true
-  - channel: latest
+dotnet: 3.0.100-preview8-013656
+#addons:
+#  snaps:
+#  - name: dotnet-sdk
+#  - classic: true
+#  - channel: latest
 
 before_script:
-  - sudo snap alias dotnet-sdk.dotnet dotnet
+  #- sudo snap alias dotnet-sdk.dotnet dotnet
   - nuget restore SwitchTest.csproj
   - nuget install xunit.runners -Version 2.4.1 -OutputDirectory testrunner
   - dotnet --info
