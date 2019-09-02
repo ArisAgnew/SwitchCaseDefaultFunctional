@@ -6,7 +6,7 @@ mono: none
 addons:
   snaps:
   - name: dotnet-sdk
-  - confinement: classic
+  #- confinement: classic
   - channel: latest/beta
 
 before_script:
