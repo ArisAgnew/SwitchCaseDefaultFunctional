@@ -138,7 +138,7 @@ namespace SwitchFunc
 
     public sealed partial class SwitchCaseDefault<V>
     {
-        protected sealed override void Breaker()
+        private protected sealed override void Breaker()
         {
             if (IsValueType)
             {
@@ -149,13 +149,13 @@ namespace SwitchFunc
             else return;
         }
 
-        protected sealed override void ExecutionByCaseValue(Action<V> actionByCaseValue)
+        private protected sealed override void ExecutionByCaseValue(Action<V> actionByCaseValue)
         {
             if (!IsCaseValueNull || !IsCaseValueDefault)
                 actionByCaseValue?.Invoke(caseValue);
         }
 
-        protected sealed override void ExecutionBySwitchValue(Action<V> actionBySwitchValue)
+        private protected sealed override void ExecutionBySwitchValue(Action<V> actionBySwitchValue)
         {
             if (!IsSwitchValueNull || !IsSwitchValueDefault)
                 actionBySwitchValue?.Invoke(switchValue);

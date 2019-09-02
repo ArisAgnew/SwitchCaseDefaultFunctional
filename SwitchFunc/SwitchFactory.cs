@@ -21,7 +21,7 @@ namespace SwitchFunc
         ///     }
         ///     </code>
         /// </example>
-        protected abstract void Breaker();
+        private protected abstract void Breaker();
 
         /// <summary>
         /// The main execution in relation to 'switch' value
@@ -29,7 +29,7 @@ namespace SwitchFunc
         /// <param name="actionBySwitchValue">
         /// Action using as an inbound parameter the very 'switch' value
         /// </param>
-        protected abstract void ExecutionBySwitchValue(Action<V> actionBySwitchValue = default);
+        private protected abstract void ExecutionBySwitchValue(Action<V> actionBySwitchValue = default);
 
         /// <summary>
         /// The main execution in relation to 'case' value
@@ -37,6 +37,6 @@ namespace SwitchFunc
         /// <param name="actionByCaseValue">
         /// Action using as an inbound parameter the very 'case' value
         /// </param>
-        protected abstract void ExecutionByCaseValue(Action<V> actionByCaseValue = default);
+        private protected abstract void ExecutionByCaseValue(Action<V> actionByCaseValue = default);
     }
 }
