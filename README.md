@@ -1,10 +1,9 @@
-[![Build Status](https://travis-ci.org/ArisAgnew/SwitchCaseDefaultFunctional.svg?branch=master)](https://travis-ci.org/ArisAgnew/SwitchCaseDefaultFunctional)
-
-![AppVeyor](https://img.shields.io/appveyor/ci/ArisAgnew/SwitchCaseDefaultFunctional.svg?label=appveyor%20%7C%20build)
-
-[![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/ArisAgnew/SwitchCaseDefaultFunctional/master.svg?label=appveyor%20%7C%20build&passed_label=passed&failed_label=failed)](https://ci.appveyor.com/project/ArisAgnew/switchcasedefaultfunctional)
-
 # SwitchCaseFunctional
+[![Travis][build-badge-travis]][build-travis]
+
+[build-badge-travis]: https://travis-ci.org/ArisAgnew/SwitchCaseDefaultFunctional.svg?branch=master
+[build-travis]: https://travis-ci.org/ArisAgnew/SwitchCaseDefaultFunctional
+
 This module is designed to write ordinary "switch-case-default" construction in a functional representation primarily.
 
 You are able to write "switch-case-default" construction by means of simple methods' chaining.
