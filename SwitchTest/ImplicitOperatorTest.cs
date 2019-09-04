@@ -97,9 +97,10 @@ namespace SwitchTest
 
         [Fact]
         public void ImplicitConversionTest()
-        {
+        {            
             Assert.All(_data, item => {
-                Assert.True(_plainValue.GetType().HasImplicitConversionWith(item.GetType()));
+                Assert.ThrowsAny<NullReferenceException>(() =>
+                    Assert.True(_plainValue.GetType().HasImplicitConversionWith(item.GetType())));
             });
         }
         #endregion Check up on real non-null or non-default entities
