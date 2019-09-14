@@ -42,10 +42,8 @@ namespace SwitchFunc
 
         private Action ResetArgumentList => () => argsBuilder?.Clear();
 
-        public static SwitchCaseDefault<V> Of(V arg)
-        {
-            return new Lazy<SwitchCaseDefault<V>>(() => new SwitchCaseDefault<V>(arg), PublicationOnly).Value;
-        }
+        public static SwitchCaseDefault<V> Of(V arg) =>
+            new Lazy<SwitchCaseDefault<V>>(() => new SwitchCaseDefault<V>(arg), PublicationOnly).Value;
 
         public static SwitchCaseDefault<V> OfNullable(V arg) => arg != null ? Of(arg) : EMPTY;
         public static SwitchCaseDefault<V> OfNullable(Func<V> outputValue) => outputValue != null ? Of(outputValue()) : EMPTY;
