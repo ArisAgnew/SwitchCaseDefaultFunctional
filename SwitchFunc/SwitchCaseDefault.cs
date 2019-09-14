@@ -2,6 +2,8 @@
 using System.Collections.Immutable;
 using System.Linq;
 
+using static System.Threading.LazyThreadSafetyMode;
+
 namespace SwitchFunc
 {
     /// <summary>
@@ -14,7 +16,6 @@ namespace SwitchFunc
     /// </remarks>
     public sealed partial class SwitchCaseDefault<V> : SwitchFactory<V>, ISwitch<V>, ICase<V>, IDefault<V>
     {
-        private static readonly object synchronized = new object();
         private static readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
         private static readonly SwitchCaseDefault<V> EMPTY = new SwitchCaseDefault<V>(default);
 
@@ -40,20 +41,17 @@ namespace SwitchFunc
         private bool IsValueType => (typeof(V) ?? default).IsValueType;
 
         private Action ResetArgumentList => () => argsBuilder?.Clear();
-        
+
         public static SwitchCaseDefault<V> Of(V arg)
         {
-            lock (synchronized)
-            {
-                return instance ?? (instance = new SwitchCaseDefault<V>(arg));
-            }
+            return new Lazy<SwitchCaseDefault<V>>(() => new SwitchCaseDefault<V>(arg), PublicationOnly).Value;
         }
 
         public static SwitchCaseDefault<V> OfNullable(V arg) => arg != null ? Of(arg) : EMPTY;
         public static SwitchCaseDefault<V> OfNullable(Func<V> outputValue) => outputValue != null ? Of(outputValue()) : EMPTY;
-        
+
         public ICase<V> CaseOf(V cValue, Predicate<V> when = default)
-        {            
+        {
             if (!cValue.Equals(default))
             {
                 caseValue = cValue;
@@ -75,7 +73,7 @@ namespace SwitchFunc
 
         IDefault<V> IDefault<V>.Accomplish(Action action, bool enableBreak) => DefaultAccomplish(v => action(), enableBreak);
         IDefault<V> IDefault<V>.Accomplish(Action<V> action, bool enableBreak) => DefaultAccomplish(action, enableBreak);
-        
+
         V IDefault<V>.AccomplishToGet(Func<V> supplier, bool enableBreak) =>
             caseValue.Equals(switchValue)
                 ? default
