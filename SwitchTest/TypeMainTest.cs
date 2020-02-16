@@ -1,6 +1,7 @@
 using SwitchFunc;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
@@ -452,7 +453,7 @@ namespace SwitchTest
     #region Reference Types Unit Tests
     public partial class TypeMainTest
     {
-        [Fact]
+        [Fact(Skip = "Skipped")]
         public void ObjectTest()
         {
             var objects = new object[] {
@@ -546,7 +547,7 @@ namespace SwitchTest
                 $"Type of SwitchValue: {_switchRefObject.GetType().GetGenericArguments().SingleOrDefault()}");
         }
 
-        [Fact]
+        [Fact(Skip = "Skipped")]
         public void StringTest()
         {            
             _switchRefString = ImmutableList<string>.Empty
@@ -563,7 +564,6 @@ namespace SwitchTest
 
             Assert.StrictEqual(typeof(string), _switchRefString.GetSwitch().GetType());
             Assert.True(type.IsEquivalentTo(typeof(string)));
-            Assert.True(!type.IsValueType);
             Assert.False(type.IsValueType);
 
             _switchRefString
