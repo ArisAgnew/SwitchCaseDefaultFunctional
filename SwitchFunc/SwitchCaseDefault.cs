@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
-
+using System.Threading;
 using static System.Threading.LazyThreadSafetyMode;
 
 namespace SwitchFunc
@@ -16,6 +16,8 @@ namespace SwitchFunc
     /// </remarks>
     public sealed partial class SwitchCaseDefault<V> : SwitchFactory<V>, ISwitch<V>, ICase<V>, IDefault<V>
     {
+        private static readonly object syncRoot = new object();
+
         private static readonly ImmutableList<V>.Builder argsBuilder = ImmutableList.CreateBuilder<V>();
         private static readonly SwitchCaseDefault<V> EMPTY = new SwitchCaseDefault<V>(default);
 
@@ -40,8 +42,25 @@ namespace SwitchFunc
 
         private Action ResetArgumentList => () => argsBuilder?.Clear();
 
-        public static SwitchCaseDefault<V> Of(V arg) =>
-            new Lazy<SwitchCaseDefault<V>>(() => new SwitchCaseDefault<V>(arg), PublicationOnly).Value;
+        private static SwitchCaseDefault<V> Instance
+        {
+            get
+            {
+                if (instance == default)
+                {
+                    Monitor.Enter(syncRoot);
+                    SwitchCaseDefault<V> temp = new SwitchCaseDefault<V>();
+                    Interlocked.Exchange(ref instance, temp);
+                    Monitor.Exit(syncRoot);
+
+                    return instance;
+                }
+
+                return instance;
+            }
+        }
+
+        public static SwitchCaseDefault<V> Of(V arg) => Instance;
 
         public static SwitchCaseDefault<V> OfNullable(V arg) => arg != null ? Of(arg) : EMPTY;
         public static SwitchCaseDefault<V> OfNullable(Func<V> outputValue) => outputValue != null ? Of(outputValue()) : EMPTY;
@@ -113,8 +132,8 @@ namespace SwitchFunc
         //It goes after default end-point
         IDefault<V> IDefault<V>.Peek(in Action<V> action) => Peek(action) as IDefault<V> ?? default;
 
-        public V GetSwitch() => switchValue.Equals(default(V)) || switchValue == null ? switchValueGhost : switchValue;
-        public V GetCase() => caseValue.Equals(default(V)) || caseValue == null ? caseValueGhost : caseValue;
+        public V GetSwitch() => switchValue.Equals(default(V)) ? switchValueGhost : switchValue;
+        public V GetCase() => caseValue.Equals(default(V)) ? caseValueGhost : caseValue;
 
         public V GetSwitchCustomized(in Func<V, V> funcCustom) => !IsSwitchValueNull ? funcCustom(GetSwitch()) : default;
         public U GetSwitchCustomized<U>(in Func<V, U> funcCustom) => !IsSwitchValueNull ? funcCustom(GetSwitch()) : default;
