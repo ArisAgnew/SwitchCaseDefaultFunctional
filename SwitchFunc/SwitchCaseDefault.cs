@@ -33,10 +33,8 @@ namespace SwitchFunc
         private V caseValueGhost = default;
 
         private bool IsSwitchValueNull => switchValue == null;
-        private bool IsSwitchValueDefault => switchValue == default;
 
         private bool IsCaseValueNull => caseValue == null;
-        private bool IsCaseValueDefault => caseValue == default;
 
         private bool IsValueType => (typeof(V) ?? default).IsValueType;
 
@@ -78,14 +76,14 @@ namespace SwitchFunc
                 : enableBreak
                     ? supplier.Equals(default)
                         ? default
-                        : (!IsSwitchValueNull || !IsSwitchValueDefault)
+                        : (!IsSwitchValueNull)
                             ? supplier()
                             : default
                     : default;
 
         public SwitchCaseDefault<V> ResetFullEntities()
         {
-            if (!IsSwitchValueNull && !IsSwitchValueDefault)
+            if (!IsSwitchValueNull)
             {
                 Breaker();
             }
@@ -101,7 +99,7 @@ namespace SwitchFunc
         //It goes after switch start-point
         public ICase<V> Peek(in Action<V> action)
         {
-            if (!IsSwitchValueNull || !IsSwitchValueDefault)
+            if (!IsSwitchValueNull)
             {
                 action?.Invoke(switchValue);
             }
@@ -115,14 +113,14 @@ namespace SwitchFunc
         //It goes after default end-point
         IDefault<V> IDefault<V>.Peek(in Action<V> action) => Peek(action) as IDefault<V> ?? default;
 
-        public V GetSwitch() => switchValue.Equals(default(V)) || switchValue == default ? switchValueGhost : switchValue;
-        public V GetCase() => caseValue.Equals(default(V)) || caseValue == default ? caseValueGhost : caseValue;
+        public V GetSwitch() => switchValue.Equals(default(V)) || switchValue == null ? switchValueGhost : switchValue;
+        public V GetCase() => caseValue.Equals(default(V)) || caseValue == null ? caseValueGhost : caseValue;
 
-        public V GetSwitchCustomized(in Func<V, V> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(GetSwitch()) : default;
-        public U GetSwitchCustomized<U>(in Func<V, U> funcCustom) => !IsSwitchValueNull || !IsSwitchValueDefault ? funcCustom(GetSwitch()) : default;
+        public V GetSwitchCustomized(in Func<V, V> funcCustom) => !IsSwitchValueNull ? funcCustom(GetSwitch()) : default;
+        public U GetSwitchCustomized<U>(in Func<V, U> funcCustom) => !IsSwitchValueNull ? funcCustom(GetSwitch()) : default;
 
-        public V GetCaseCustomized(in Func<V, V> funcCustom) => !IsCaseValueNull || !IsCaseValueDefault ? funcCustom(GetCase()) : default;
-        public U GetCaseCustomized<U>(in Func<V, U> funcCustom) => !IsCaseValueNull || !IsCaseValueDefault ? funcCustom(GetCase()) : default;
+        public V GetCaseCustomized(in Func<V, V> funcCustom) => !IsCaseValueNull ? funcCustom(GetCase()) : default;
+        public U GetCaseCustomized<U>(in Func<V, U> funcCustom) => !IsCaseValueNull ? funcCustom(GetCase()) : default;
 
         public ImmutableHashSet<V> GetCaseValuesAsImmutableSet() => argsBuilder.ToImmutableHashSet() ?? default;
         public ImmutableSortedSet<V> GetCaseValuesAsImmutableSortedSet() => argsBuilder.ToImmutableSortedSet() ?? default;
@@ -147,13 +145,13 @@ namespace SwitchFunc
 
         private protected sealed override void ExecutionByCaseValue(Action<V> actionByCaseValue)
         {
-            if (!IsCaseValueNull || !IsCaseValueDefault)
+            if (!IsCaseValueNull)
                 actionByCaseValue?.Invoke(caseValue);
         }
 
         private protected sealed override void ExecutionBySwitchValue(Action<V> actionBySwitchValue)
         {
-            if (!IsSwitchValueNull || !IsSwitchValueDefault)
+            if (!IsSwitchValueNull)
                 actionBySwitchValue?.Invoke(switchValue);
         }
 
@@ -214,7 +212,7 @@ namespace SwitchFunc
                 }
             }
 
-            if (!IsValueType && refFiltered == default)
+            if (!IsValueType && refFiltered == null)
             {
                 fulfillMain();
             }
