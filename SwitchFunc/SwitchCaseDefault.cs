@@ -2,7 +2,6 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
-using static System.Threading.LazyThreadSafetyMode;
 
 namespace SwitchFunc
 {
@@ -49,8 +48,7 @@ namespace SwitchFunc
                 if (instance == default)
                 {
                     Monitor.Enter(syncRoot);
-                    SwitchCaseDefault<V> temp = new SwitchCaseDefault<V>();
-                    Interlocked.Exchange(ref instance, temp);
+                    Interlocked.Exchange(ref instance, new SwitchCaseDefault<V>());
                     Monitor.Exit(syncRoot);
 
                     return instance;
