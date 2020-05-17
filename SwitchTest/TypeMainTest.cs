@@ -453,7 +453,7 @@ namespace SwitchTest
     #region Reference Types Unit Tests
     public partial class TypeMainTest
     {
-        [Fact(Skip = "Skipped")]
+        [Fact]
         public void ObjectTest()
         {
             var objects = new object[] {
@@ -547,7 +547,7 @@ namespace SwitchTest
                 $"Type of SwitchValue: {_switchRefObject.GetType().GetGenericArguments().SingleOrDefault()}");
         }
 
-        [Fact(Skip = "Skipped")]
+        [Fact]
         public void StringTest()
         {            
             _switchRefString = ImmutableList<string>.Empty

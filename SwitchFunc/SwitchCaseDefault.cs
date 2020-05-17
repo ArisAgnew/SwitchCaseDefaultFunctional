@@ -40,25 +40,20 @@ namespace SwitchFunc
         private bool IsValueType => (typeof(V) ?? default).IsValueType;
 
         private Action ResetArgumentList => () => argsBuilder?.Clear();
-
-        private static SwitchCaseDefault<V> Instance
+ 
+        public static SwitchCaseDefault<V> Of(V arg)
         {
-            get
+            if (instance == default)
             {
-                if (instance == default)
-                {
-                    Monitor.Enter(syncRoot);
-                    Interlocked.Exchange(ref instance, new SwitchCaseDefault<V>());
-                    Monitor.Exit(syncRoot);
-
-                    return instance;
-                }
+                Monitor.Enter(syncRoot);
+                Interlocked.Exchange(ref instance, new SwitchCaseDefault<V>(arg));
+                Monitor.Exit(syncRoot);
 
                 return instance;
             }
-        }
 
-        public static SwitchCaseDefault<V> Of(V arg) => Instance;
+            return instance;
+        }
 
         public static SwitchCaseDefault<V> OfNullable(V arg) => arg != null ? Of(arg) : EMPTY;
         public static SwitchCaseDefault<V> OfNullable(Func<V> outputValue) => outputValue != null ? Of(outputValue()) : EMPTY;
